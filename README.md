@@ -25,6 +25,7 @@ You can use any of the following parameters to search for libraries. A search wi
 * `zip` - zip name of project. example jquery.zip
 * `mainfile` - mainfile parameter in info.ini. example jquery.min.js
 * `lastversion`- lastversion of the project. Example 2.0.3 (will match multiple projects)
+* `versions` -  all hosted versions for selected project. (read only)
 * `homepage`- webpage of project. Example http://jquery.com/
 * `github`- github page of project. Example https://github.com/jquery/jquery
 * `author` the author of project. Example jQuery Foundation
@@ -44,6 +45,7 @@ It's possible to set multiple fields using a comma for seperation.
 ```
 http://api.jsdelivr.net/api/v1/libraries?name=jquery&fields=mainfile,name
 ```
+
 
 
 Built with [rest-sugar](https://github.com/bebraw/rest-sugar)
