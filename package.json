@@ -24,10 +24,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:bebraw/jsdelivr-api.git"
+    "url": "git@github.com:jsdelivr/api.git"
   },
-  "homepage": "https://github.com/bebraw/jsdelivr-api",
+  "homepage": "https://github.com/jsdelivr/api",
   "bugs": {
-    "url": "https://github.com/bebraw/jsdelivr-api/issues"
+    "url": "https://github.com/jsdelivr/api/issues"
   }
 }
