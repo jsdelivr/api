@@ -37,7 +37,7 @@ module.exports = function(app) {
                 return res.send(404);
             }
 
-            res.json(library);
+            res.json([library]);
         });
     });
 
