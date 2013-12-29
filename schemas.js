@@ -9,6 +9,7 @@ schema(exports, 'Library').fields({
     lastversion: String,
     description: String,
     homepage: String,
+    github: String,
     author: String,
     assets: [Object]
 });
