@@ -47,3 +47,4 @@ http://api.jsdelivr.net/api/v1/libraries?name=jquery&fields=mainfile,name
 
 
 Built with [rest-sugar](https://github.com/bebraw/rest-sugar)
+
