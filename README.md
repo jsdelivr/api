@@ -1,8 +1,5 @@
 # jsDelivr Official API
 
-Built with [rest-sugar](https://github.com/bebraw/rest-sugar)
-
-## Documentation
 
 Root: `api/v1/libraries`. 
 
@@ -39,11 +36,14 @@ http://api.jsdelivr.net/api/v1/libraries?name=jquery&homepage=http://jquery.com/
 You can combine the above parameters with the parameter `fields`. This way you can control the output. For example to get the `mainfile` for jQuery you would run the following request.
 
 ```
-http://jsdelivr-api.herokuapp.com/api/v1/libraries?name=jquery&fields=mainfile
+http://api.jsdelivr.net/api/v1/libraries?name=jquery&fields=mainfile
 ```
 
-It is possible to set multiple fields using a comma for seperation.
+It's possible to set multiple fields using a comma for seperation.
 
 ```
-http://jsdelivr-api.herokuapp.com/api/v1/libraries?name=jquery&fields=mainfile,name
+http://api.jsdelivr.net/api/v1/libraries?name=jquery&fields=mainfile,name
 ```
+
+
+Built with [rest-sugar](https://github.com/bebraw/rest-sugar)
