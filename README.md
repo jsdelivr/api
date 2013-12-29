@@ -17,6 +17,7 @@ Get full information for a single library based on `name` parameter.
 
 ```
 http://api.jsdelivr.net/api/v1/libraries?name=jquery
+http://api.jsdelivr.net/api/v1/libraries/jquery - alias
 ```
 
 You can use any of the following parameters to search for libraries. A search will be performed for projects matching your input. You can use multiple parameters at the same time. If multiple projects match they all will be outputed.
