@@ -11,6 +11,7 @@ schema(exports, 'Library').fields({
     homepage: String,
     github: String,
     author: String,
-    assets: [Object]
+    assets: [Object],
+    versions: [String]
 });
 
