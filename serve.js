@@ -1,16 +1,13 @@
 #!/usr/bin/env node
 var express = require('express');
-var rest = require('rest-sugar');
-var sugar = require('object-sugar');
 var taskist = require('taskist');
 
 var config = require('./config');
-var schemas = require('./schemas');
 var tasks = require('./tasks');
+var api = require('./api');
 
 
 main();
-
 
 function main() {
     taskist(config.tasks, tasks, {
@@ -40,13 +37,8 @@ function serve() {
         app.use(express.errorHandler());
     });
 
-    var api = rest(app, '/api/v1', {
-        libraries: schemas.Library
-    }, sugar);
+    api(app);
 
-    api.pre(function() {
-        api.use(rest.only('GET'));
-    });
     process.on('exit', terminator);
 
     ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT', 'SIGBUS',
