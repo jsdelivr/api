@@ -19,7 +19,8 @@
     "object-sugar": "0.7.0",
     "taskist": "0.3.0",
     "require-dir": "0.1.0",
-    "request": "~2.30.0"
+    "request": "~2.30.0",
+    "async": "~0.2.9"
   },
   "repository": {
     "type": "git",

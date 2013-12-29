@@ -3,6 +3,13 @@ var schema = sugar.schema();
 
 
 schema(exports, 'Library').fields({
-    name: String
+    name: String,
+    zip: String,
+    mainfile: String,
+    lastversion: String,
+    description: String,
+    homepage: String,
+    author: String,
+    assets: [Object]
 });
 
