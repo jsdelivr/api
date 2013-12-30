@@ -13,7 +13,7 @@ module.exports = function(cb) {
         json: true
     }, function(err, res, data) {
         if(err || !data || !data.package) {
-            return cb(err);
+            console.error('Failed to update data!', err, data);
         }
 
         async.each(data.package, function(library, cb) {
@@ -30,6 +30,8 @@ module.exports = function(cb) {
             if(err) {
                 console.error(err);
             }
+
+            console.log('Updated data');
 
             cb();
         });;
