@@ -28,6 +28,8 @@ function serve() {
     app.configure(function() {
         app.set('port', port);
 
+        app.disable('etag');
+
         app.use(express.logger('dev'));
 
         app.use(app.router);
