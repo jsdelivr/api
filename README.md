@@ -58,4 +58,3 @@ http://api.jsdelivr.net/api/v1/libraries/jquery/2.0.3
 
 
 Built with [rest-sugar](https://github.com/bebraw/rest-sugar)
-
