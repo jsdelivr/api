@@ -52,7 +52,7 @@ module.exports = function(app) {
 
     app.get('/packages.php', function(req, res) {
         request.get({
-            url: 'http://api.jsdelivr.com/packages.php',
+            url: 'http://www.jsdelivr.com/packages.php',
             pool: {
                 maxSockets: 100
             }
