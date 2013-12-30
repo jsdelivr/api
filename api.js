@@ -6,7 +6,7 @@ var Library = require('./schemas').Library;
 
 
 module.exports = function(app) {
-    var root = '/api/v1';
+    var root = '/v1/jsdelivr';
 
     app.get(root + '/libraries/:name/:version', function(req, res) {
         var version = req.params.version;
