@@ -1,3 +1,4 @@
+var request = require('request');
 var rest = require('rest-sugar');
 var sugar = require('object-sugar');
 
@@ -49,9 +50,12 @@ module.exports = function(app) {
         api.use(rest.only('GET'));
     });
 
-    var librariesRoute = app.routes.get.filter(function(v) {
-        return v.path === '/api/v1/libraries';
-    })[0];
-
-    app.get('/packages.php', librariesRoute.callbacks[0]);
+    app.get('/packages.php', function(req, res) {
+        request.get({
+            url: 'http://api.jsdelivr.com/packages.php',
+            pool: {
+                maxSockets: 100
+            }
+        }).pipe(res);
+    });
 };
