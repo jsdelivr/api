@@ -12,7 +12,7 @@ module.exports = function(cb) {
         url: url,
         json: true
     }, function(err, res, data) {
-        if(err) {
+        if(err || !data) {
             return cb(err);
         }
 
