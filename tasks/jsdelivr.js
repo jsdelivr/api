@@ -26,6 +26,12 @@ module.exports = function(cb) {
 
                 sugar.update(Library, d._id, library, cb);
             });
-        }, cb);
+        }, function(err) {
+            if(err) {
+                console.error(err);
+            }
+
+            cb();
+        });;
     })
 };

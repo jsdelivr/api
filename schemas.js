@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var sugar = require('mongoose-sugar');
+
 var schema = sugar.schema(mongoose);
 
 
@@ -12,7 +13,7 @@ schema(exports, 'Library').fields({
     homepage: String,
     github: String,
     author: String,
-    assets: [Object],
+    assets: sugar.mixed(),
     versions: [String]
 });
 
