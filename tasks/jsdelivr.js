@@ -14,6 +14,8 @@ module.exports = function(cb) {
     }, function(err, res, data) {
         if(err || !data || !data.package) {
             console.error('Failed to update data!', err, data);
+
+            return cb(err);
         }
 
         async.each(data.package, function(library, cb) {
@@ -29,6 +31,8 @@ module.exports = function(cb) {
         }, function(err) {
             if(err) {
                 console.error(err);
+
+                return cb(err);
             }
 
             console.log('Updated data');
