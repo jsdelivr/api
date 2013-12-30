@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 var express = require('express');
 var taskist = require('taskist');
+var sugar = require('mongoose-sugar');
 
 var config = require('./config');
 var tasks = require('./tasks');
@@ -10,14 +11,21 @@ var api = require('./api');
 main();
 
 function main() {
-    taskist(config.tasks, tasks, {
-        instant: function(err) {
-            if(err) {
-                return console.error(err);
-            }
+    var mongoUrl = sugar.parseAddress(config.mongo);
 
-            serve();
+    sugar.connect(mongoUrl, function(err) {
+        if(err) {
+            return console.error('Failed to connect to database', mongoUrl, err);
         }
+
+        initTasks();
+        serve();
+    });
+}
+
+function initTasks() {
+    taskist(config.tasks, tasks, {
+        instant: true
     });
 }
 

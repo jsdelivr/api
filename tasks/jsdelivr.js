@@ -1,6 +1,6 @@
 var async = require('async');
 var request = require('request');
-var sugar = require('object-sugar');
+var sugar = require('mongoose-sugar');
 
 var Library = require('../schemas').Library;
 
@@ -12,14 +12,20 @@ module.exports = function(cb) {
         url: url,
         json: true
     }, function(err, res, data) {
-        if(err) return cb(err);
+        if(err) {
+            return cb(err);
+        }
 
-        sugar.removeAll(Library, function(err) {
-            if(err) {
-                return cb(err);
-            }
+        async.each(data.package, function(library, cb) {
+            sugar.getOrCreate(Library, {
+                name: library.name
+            }, function(err, d) {
+                if(err) {
+                    return cb(err);
+                }
 
-            async.each(data.package, sugar.create.bind(null, Library), cb);
-        });
+                sugar.update(Library, d._id, library, cb);
+            });
+        }, cb);
     })
 };
