@@ -6,7 +6,7 @@ var Library = require('../schemas').Library;
 
 
 module.exports = function(cb) {
-    var url = 'http://api.jsdelivr.com/packagesmain.php';
+    var url = 'http://www.jsdelivr.com/packagesmain.php';
 
     request.get({
         url: url,
