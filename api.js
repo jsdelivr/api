@@ -48,4 +48,10 @@ module.exports = function(app) {
     api.pre(function() {
         api.use(rest.only('GET'));
     });
+
+    var librariesRoute = app.routes.get.filter(function(v) {
+        return v.path === '/api/v1/libraries';
+    })[0];
+
+    app.get('/packages.php', librariesRoute.callbacks[0]);
 };
