@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+- '0.10'
+- '0.8'
+deploy:
+  provider: appfog
+  email: dakulovgr@gmail.com
+  password:
+    secure: kjH2STsXmpsCjgkSLWw6gjzvux8HGN4miF9waAhRKKKsWFi9bjg+ssvIES4wo4yib/pS41jOXPyjQgaJOsRL4dKio60vnHyt1MpspkKbuQaMEBOra7uveIwKu3pq/AvZdjC1caiekOL6rb0rcbrhKMtm6XXddalCWygqkBhYVPE=
+  app: jsdelivrapi
+  on:
+    repo: jsdelivr/api
