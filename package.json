@@ -1,5 +1,6 @@
 {
   "name": "jsdelivr-api",
+  "subdomain": "jsdelivrapi",
   "version": "0.1.0",
   "description": "jsDelivr API",
   "private": true,
@@ -8,7 +9,7 @@
     "npm": "1.3.x"
   },
   "scripts": {
-    "start": "node ./serve.js"
+    "start": "serve.js"
   },
   "author": "Juho Vepsalainen",
   "license": "MIT",
