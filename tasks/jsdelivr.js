@@ -8,6 +8,8 @@ var Library = require('../schemas').Library;
 module.exports = function(cb) {
     var url = 'http://www.jsdelivr.com/packagesmain.php';
 
+    console.log('Starting to update data');
+
     request.get({
         url: url,
         json: true
@@ -17,6 +19,8 @@ module.exports = function(cb) {
 
             return cb(err);
         }
+
+        console.log('Fetched data');
 
         async.each(data.package, function(library, cb) {
             sugar.getOrCreate(Library, {
