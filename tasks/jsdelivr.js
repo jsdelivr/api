@@ -12,7 +12,7 @@ module.exports = function(cb) {
         url: url,
         json: true
     }, function(err, res, data) {
-        if(err || !data || !data.package) {
+        if(err || !data || !data.package) {
             console.error('Failed to update data!', err, data);
 
             return cb(err);
@@ -38,6 +38,7 @@ module.exports = function(cb) {
             console.log('Updated data');
 
             cb();
-        });;
-    })
+        });
+    });
 };
+
