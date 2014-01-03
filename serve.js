@@ -13,12 +13,19 @@ main();
 function main() {
     var mongoUrl = sugar.parseAddress(config.mongo);
 
+    console.log('Connecting to database at url', mongoUrl);
+
     sugar.connect(mongoUrl, function(err) {
         if(err) {
             return console.error('Failed to connect to database', mongoUrl, err);
         }
 
+        console.log('Connected to database');
+
+        console.log('Initializing tasks');
         initTasks();
+
+        console.log('Starting server');
         serve();
     });
 }
