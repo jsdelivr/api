@@ -1,17 +1,27 @@
 box: wercker/nodejs
-# Build definition
 build:
-  # The steps that will be executed on build
-  steps:
-    # A step that executes `npm install` command
-    - npm-install
-    # A step that executes `npm test` command
-    - npm-test
+    steps:
+        - script:
+            name: install npm dependencies
+            code: |
+                mkdir -p $WERCKER_CACHE_DIR/wercker/npm
+                npm config set cache $WERCKER_CACHE_DIR/wercker/npm
+                sudo npm install --save-dev
+        - npm-test
+        - script:
+            name: echo nodejs information
+            code: |
+                echo "node version $(node -v) running"
+                echo "npm version $(npm -v) running"
+deploy:
+    steps:
+        - script:
+            name: install af
+            code: sudo gem install af --version "0.3.18.12"
+        - script:
+            name: login to af
+            code: af login --email $AF_EMAIL --passwd $AF_PASSWORD
+        - script:
+            name: update af
+            code: af -u dakulovgr@gmail.com update cdnperf
 
-    # A custom script step, name value is used in the UI
-    # and the code value contains the command that get executed
-    - script:
-        name: echo nodejs information
-        code: |
-          echo "node version $(node -v) running"
-          echo "npm version $(npm -v) running"
