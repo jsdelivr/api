@@ -21,7 +21,7 @@
     "require-dir": "0.1.0",
     "request": "2.33.0",
     "async": "0.2.10",
-    "object-sugar": "~0.7.2"
+    "object-sugar": "0.7.3"
   },
   "repository": {
     "type": "git",
