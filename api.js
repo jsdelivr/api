@@ -1,6 +1,6 @@
 var request = require('request');
 var rest = require('rest-sugar');
-var sugar = require('mongoose-sugar');
+var sugar = require('object-sugar');
 
 var Library = require('./schemas').Library;
 

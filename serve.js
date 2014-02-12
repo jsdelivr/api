@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 var express = require('express');
 var taskist = require('taskist');
-var sugar = require('mongoose-sugar');
+var sugar = require('object-sugar');
 
 var config = require('./config');
 var tasks = require('./tasks');
@@ -11,13 +11,11 @@ var api = require('./api');
 main();
 
 function main() {
-    var mongoUrl = sugar.parseAddress(config.mongo);
+    var db = 'db';
 
-    console.log('Connecting to database at url', mongoUrl);
-
-    sugar.connect(mongoUrl, function(err) {
+    sugar.connect(db, function(err) {
         if(err) {
-            return console.error('Failed to connect to database', mongoUrl, err);
+            return console.error('Failed to connect to database', db, err);
         }
 
         console.log('Connected to database');

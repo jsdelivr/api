@@ -1,7 +1,6 @@
-var mongoose = require('mongoose');
-var sugar = require('mongoose-sugar');
+var sugar = require('object-sugar');
 
-var schema = sugar.schema(mongoose);
+var schema = sugar.schema();
 
 
 schema(exports, 'Library').fields({

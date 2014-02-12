@@ -21,8 +21,7 @@
     "require-dir": "0.1.0",
     "request": "2.33.0",
     "async": "0.2.10",
-    "mongoose": "3.8.5",
-    "mongoose-sugar": "0.8.1"
+    "object-sugar": "~0.7.2"
   },
   "repository": {
     "type": "git",
