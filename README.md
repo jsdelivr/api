@@ -1,7 +1,6 @@
 # jsDelivr Official API
 
-
-Root: `api/v1/libraries`. 
+Root: `/v1/<cdn>/libraries`.
 
 Only GET requests are allowed. No limits are set.
 
@@ -10,6 +9,7 @@ Get all hosted libraries in JSON format
 
 ```
 http://api.jsdelivr.com/v1/jsdelivr/libraries
+http://api.jsdelivr.com/v1/cdnjs/libraries
 ```
 
 

@@ -8,19 +8,19 @@ var Library = require('../schemas').jsDelivrLibrary;
 module.exports = function(cb) {
     var url = 'http://www.jsdelivr.com/packagesmain.php';
 
-    console.log('Starting to update data');
+    console.log('Starting to update jsdelivr data');
 
     request.get({
         url: url,
         json: true
     }, function(err, res, data) {
         if(err || !data || !data.package) {
-            console.error('Failed to update data!', err, data);
+            console.error('Failed to update jsdelivr data!', err, data);
 
             return cb(err);
         }
 
-        console.log('Fetched data');
+        console.log('Fetched jsdelivr data');
 
         async.each(data.package, function(library, cb) {
             sugar.getOrCreate(Library, {
@@ -39,7 +39,7 @@ module.exports = function(cb) {
                 return cb(err);
             }
 
-            console.log('Updated data');
+            console.log('Updated jsdelivr data');
 
             cb();
         });

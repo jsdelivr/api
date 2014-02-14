@@ -16,5 +16,5 @@ var fields = {
     versions: [String]
 };
 
+schema(exports, 'cdnjsLibrary').fields(fields);
 schema(exports, 'jsDelivrLibrary').fields(fields);
-
