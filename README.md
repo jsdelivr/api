@@ -1,4 +1,4 @@
-# jsDelivr Official API
+# Public CDNs API
 
 Root: `/v1/<cdn>/libraries`
 
