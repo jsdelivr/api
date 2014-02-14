@@ -3,7 +3,7 @@ var sugar = require('object-sugar');
 var schema = sugar.schema();
 
 
-schema(exports, 'Library').fields({
+var fields = {
     name: String,
     zip: String,
     mainfile: String,
@@ -14,5 +14,7 @@ schema(exports, 'Library').fields({
     author: String,
     assets: sugar.mixed(),
     versions: [String]
-});
+};
+
+schema(exports, 'jsDelivrLibrary').fields(fields);
 

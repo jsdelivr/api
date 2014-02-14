@@ -2,16 +2,29 @@ var request = require('request');
 var rest = require('rest-sugar');
 var sugar = require('object-sugar');
 
-var Library = require('./schemas').Library;
+var schemas = require('./schemas');
 
 
 module.exports = function(app) {
-    var root = '/v1/jsdelivr';
+    var root = '/v1/';
 
-    app.get(root + '/libraries/:name/:version', function(req, res) {
+    initApi(app, root, 'jsdelivr', schemas.jsDelivrLibrary);
+
+    app.get('/packages.php', function(req, res) {
+        request.get({
+            url: 'http://www.jsdelivr.com/packages.php',
+            pool: {
+                maxSockets: 100
+            }
+        }).pipe(res);
+    });
+};
+
+function initApi(app, root, cdn, schema) {
+    app.get(root + cdn + '/libraries/:name/:version', function(req, res) {
         var version = req.params.version;
 
-        sugar.getOne(Library, {
+        sugar.getOne(schema, {
             name: req.params.name
         }, function(err, library) {
             if(err) {
@@ -30,8 +43,8 @@ module.exports = function(app) {
         });
     });
 
-    app.get(root + '/libraries/:name', function(req, res) {
-        sugar.getOne(Library, {
+    app.get(root + cdn + '/libraries/:name', function(req, res) {
+        sugar.getOne(schema, {
             name: req.params.name
         }, function(err, library) {
             if(err) {
@@ -42,20 +55,11 @@ module.exports = function(app) {
         });
     });
 
-    var api = rest(app, root, {
-        libraries: Library
+    var api = rest(app, root + cdn, {
+        libraries: schema
     }, sugar);
 
     api.pre(function() {
         api.use(rest.only('GET'));
     });
-
-    app.get('/packages.php', function(req, res) {
-        request.get({
-            url: 'http://www.jsdelivr.com/packages.php',
-            pool: {
-                maxSockets: 100
-            }
-        }).pipe(res);
-    });
-};
+}

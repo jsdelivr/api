@@ -2,7 +2,7 @@ var async = require('async');
 var request = require('request');
 var sugar = require('object-sugar');
 
-var Library = require('../schemas').Library;
+var Library = require('../schemas').jsDelivrLibrary;
 
 
 module.exports = function(cb) {
