@@ -1,6 +1,8 @@
 # jsDelivr Official API
 
-Root: `/v1/<cdn>/libraries`.
+Root: `/v1/<cdn>/libraries`
+
+Supports `jsdelivr` and `cdnjs`
 
 Only GET requests are allowed. No limits are set.
 
