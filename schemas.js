@@ -17,4 +17,5 @@ var fields = {
 };
 
 schema(exports, 'cdnjsLibrary').fields(fields);
+schema(exports, 'googleLibrary').fields(fields);
 schema(exports, 'jsDelivrLibrary').fields(fields);

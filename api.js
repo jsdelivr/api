@@ -9,6 +9,7 @@ module.exports = function(app) {
     var root = '/v1/';
 
     initApi(app, root, 'cdnjs', schemas.cdnjsLibrary);
+    initApi(app, root, 'google', schemas.googleLibrary);
     initApi(app, root, 'jsdelivr', schemas.jsDelivrLibrary);
 
     app.get('/packages.php', function(req, res) {
