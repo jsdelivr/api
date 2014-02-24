@@ -47,6 +47,7 @@ function initApi(app, root, cdn, schema) {
 
     app.get(root + cdn + '/libraries/:name', function(req, res) {
         sugar.getOne(schema, {
+            fields: req.query.fields && req.query.fields.split(','),
             name: req.params.name
         }, function(err, library) {
             if(err) {
