@@ -3,6 +3,7 @@ var request = require('request');
 var sugar = require('object-sugar');
 
 var scrape = require('../lib/scrape_google');
+var sortVersions = require('../lib/sort_versions');
 var Library = require('../schemas').googleLibrary;
 
 
@@ -29,6 +30,8 @@ module.exports = function(cb) {
                 if(err) {
                     return cb(err);
                 }
+
+                library.versions = sortVersions(library.versions);
 
                 sugar.update(Library, d._id, library, cb);
             });

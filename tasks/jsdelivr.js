@@ -2,6 +2,7 @@ var async = require('async');
 var request = require('request');
 var sugar = require('object-sugar');
 
+var sortVersions = require('../lib/sort_versions');
 var Library = require('../schemas').jsDelivrLibrary;
 
 
@@ -29,6 +30,8 @@ module.exports = function(cb) {
                 if(err) {
                     return cb(err);
                 }
+
+                library.versions = sortVersions(library.versions);
 
                 sugar.update(Library, d._id, library, cb);
             });

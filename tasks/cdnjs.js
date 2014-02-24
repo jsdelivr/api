@@ -3,6 +3,7 @@ var request = require('request');
 var sugar = require('object-sugar');
 var prop = require('annofp').prop;
 
+var sortVersions = require('../lib/sort_versions');
 var Library = require('../schemas').cdnjsLibrary;
 
 
@@ -38,7 +39,7 @@ module.exports = function(cb) {
                     homepage: library.homepage,
                     author: library.author,
                     assets: library.assets,
-                    versions: library.assets && library.assets.map(prop('version'))
+                    versions: library.assets && sortVersions(library.assets.map(prop('version')))
                 }, cb);
             });
         }, function(err) {
