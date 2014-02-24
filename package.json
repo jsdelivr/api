@@ -23,8 +23,7 @@
     "async": "0.2.10",
     "object-sugar": "0.7.4",
     "annofp": "~0.2.1",
-    "cheerio": "~0.13.1",
-    "semver-loose": "~0.2.0"
+    "cheerio": "~0.13.1"
   },
   "repository": {
     "type": "git",
