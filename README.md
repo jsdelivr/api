@@ -22,6 +22,12 @@ http://api.jsdelivr.com/v1/jsdelivr/libraries?name=jquery
 http://api.jsdelivr.com/v1/jsdelivr/libraries/jquery - alias
 ```
 
+Get full information for any library starting with `jq` that has lastversion ending with `0.1`. [minimatch](https://www.npmjs.org/package/minimatch) syntax is supported.
+
+```
+http://api.jsdelivr.com/v1/jsdelivr/libraries?name=jq*&lastversion=*.0.1
+```
+
 You can use any of the following parameters to search for libraries. A search will be performed for projects matching your input. You can use multiple parameters at the same time. If multiple projects match they all will be outputed.
 
 * `name` - name of library. Example jquery
