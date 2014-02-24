@@ -38,6 +38,8 @@ function initTasks() {
 }
 
 function serve(cb) {
+    cb = cb || noop;
+
     var app = express();
     var port = config.port;
 
@@ -82,4 +84,6 @@ function terminator(sig) {
 
     console.log('%s: Node server stopped.', Date(Date.now()) );
 }
+
+function noop() {}
 
