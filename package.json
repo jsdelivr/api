@@ -9,7 +9,8 @@
     "npm": "1.3.x"
   },
   "scripts": {
-    "start": "serve.js"
+    "start": "serve.js",
+    "test": "node tests/test_run_server.js"
   },
   "author": "Juho Vepsalainen",
   "license": "MIT",

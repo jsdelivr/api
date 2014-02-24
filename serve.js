@@ -8,9 +8,12 @@ var tasks = require('./tasks');
 var api = require('./api');
 
 
-main();
+if(require.main === module) {
+    main();
+}
 
-function main() {
+module.exports = main;
+function main(cb) {
     var db = 'db';
 
     sugar.connect(db, function(err) {
@@ -24,7 +27,7 @@ function main() {
         initTasks();
 
         console.log('Starting server');
-        serve();
+        serve(cb);
     });
 }
 
@@ -34,7 +37,7 @@ function initTasks() {
     });
 }
 
-function serve() {
+function serve(cb) {
     var app = express();
     var port = config.port;
 
@@ -64,6 +67,8 @@ function serve() {
 
     app.listen(port, function() {
         console.log('%s: Node (version: %s) %s started on %d ...', Date(Date.now() ), process.version, process.argv[1], port);
+
+        cb(null);
     });
 }
 
