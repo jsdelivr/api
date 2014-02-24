@@ -3,6 +3,9 @@ var rest = require('rest-sugar');
 var sugar = require('object-sugar');
 
 var schemas = require('./schemas');
+var getAll = require('./lib/get_all');
+
+sugar.getAll = getAll;
 
 
 module.exports = function(app) {

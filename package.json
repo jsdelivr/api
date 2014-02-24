@@ -24,7 +24,10 @@
     "async": "0.2.10",
     "object-sugar": "0.7.4",
     "annofp": "~0.2.1",
-    "cheerio": "~0.13.1"
+    "cheerio": "~0.13.1",
+    "annois": "~0.3.0",
+    "annozip": "~0.2.1",
+    "minimatch": "~0.2.14"
   },
   "repository": {
     "type": "git",
