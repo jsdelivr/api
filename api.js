@@ -11,6 +11,13 @@ sugar.getAll = getAll;
 module.exports = function(app) {
     var root = '/v1/';
 
+    app.all('*', function(req, res, next) {
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+
+        next();
+    });
+
     initApi(app, root, 'cdnjs', schemas.cdnjsLibrary);
     initApi(app, root, 'google', schemas.googleLibrary);
     initApi(app, root, 'jsdelivr', schemas.jsDelivrLibrary);
