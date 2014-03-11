@@ -1,8 +1,8 @@
 module.exports = {
     port: 8000,
     tasks: {
-        cdnjs: {hour: 1},
-        google: {hour: 1},
-        jsdelivr: {hour: 1}
+        cdnjs: {minute: 1},
+        google: {minute: 1},
+        jsdelivr: {minute: 1}
     }
 };
