@@ -35,6 +35,7 @@ You can use any of the following parameters to search for libraries. A search wi
 * `mainfile` - mainfile parameter in info.ini. example jquery.min.js
 * `lastversion`- lastversion of the project. Example 2.0.3 (will match multiple projects)
 * `versions` -  all hosted versions for selected project. (read only)
+* `description` - description of the project
 * `homepage`- webpage of project. Example http://jquery.com/
 * `github`- github page of project. Example https://github.com/jquery/jquery
 * `author` - the author of project. Example jQuery Foundation
