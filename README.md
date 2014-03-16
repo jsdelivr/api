@@ -30,15 +30,15 @@ http://api.jsdelivr.com/v1/jsdelivr/libraries?name=jq*&lastversion=*.0.1
 
 You can use any of the following parameters to search for libraries. A search will be performed for projects matching your input. You can use multiple parameters at the same time. If multiple projects match they all will be outputed.
 
-* `name` - name of library. Example jquery
-* `zip` - zip name of project. example jquery.zip
-* `mainfile` - mainfile parameter in info.ini. example jquery.min.js
-* `lastversion`- lastversion of the project. Example 2.0.3 (will match multiple projects)
+* `name` - name of library. Example: jquery
+* `zip` - zip name of project. Example: jquery.zip
+* `mainfile` - mainfile parameter in info.ini. Example: jquery.min.js
+* `lastversion`- lastversion of the project. Example: 2.0.3 (will match multiple projects)
 * `versions` -  all hosted versions for selected project. (read only)
 * `description` - description of the project
-* `homepage`- webpage of project. Example http://jquery.com/
-* `github`- github page of project. Example https://github.com/jquery/jquery
-* `author` - the author of project. Example jQuery Foundation
+* `homepage`- webpage of project. Example: http://jquery.com/
+* `github`- github page of project. Example: https://github.com/jquery/jquery
+* `author` - the author of project. Example: jQuery Foundation
 * `assets` - files hosted per versions. (read only)
 
 
