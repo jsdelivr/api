@@ -48,7 +48,7 @@ http://api.jsdelivr.com/v1/jsdelivr/libraries?name=jquery&fields=mainfile
 ```
 
 
-It's possible to set multiple fields using a comma for seperation.
+It's possible to set multiple fields using a comma for separation.
 
 ```
 http://api.jsdelivr.com/v1/jsdelivr/libraries?name=jquery&fields=mainfile,name
