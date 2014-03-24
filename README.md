@@ -2,7 +2,7 @@
 
 Root: `/v1/<cdn>/libraries`
 
-Supports `jsdelivr`, `google` and `cdnjs`
+Supports `jsdelivr`, `google`, `cdnjs` and `bootstrap`.
 
 Only GET requests are allowed. No limits are set.
 
@@ -12,6 +12,7 @@ Get all hosted libraries in JSON format
 http://api.jsdelivr.com/v1/jsdelivr/libraries
 http://api.jsdelivr.com/v1/google/libraries
 http://api.jsdelivr.com/v1/cdnjs/libraries
+http://api.jsdelivr.com/v1/bootstrap/libraries
 ```
 
 

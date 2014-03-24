@@ -27,7 +27,8 @@
     "cheerio": "~0.13.1",
     "annois": "~0.3.0",
     "annozip": "~0.2.1",
-    "minimatch": "~0.2.14"
+    "minimatch": "~0.2.14",
+    "github": "~0.1.14"
   },
   "repository": {
     "type": "git",

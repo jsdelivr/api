@@ -16,6 +16,7 @@ var fields = {
     versions: [String]
 };
 
+schema(exports, 'bootstrapLibrary').fields(fields);
 schema(exports, 'cdnjsLibrary').fields(fields);
 schema(exports, 'googleLibrary').fields(fields);
-schema(exports, 'jsDelivrLibrary').fields(fields);
+schema(exports, 'jsdelivrLibrary').fields(fields);

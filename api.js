@@ -1,3 +1,5 @@
+'use strict';
+
 var request = require('request');
 var rest = require('rest-sugar');
 var sugar = require('object-sugar');
@@ -9,8 +11,6 @@ sugar.getAll = getAll;
 
 
 module.exports = function(app) {
-    var root = '/v1/';
-
     app.all('*', function(req, res, next) {
         res.header('Access-Control-Allow-Origin', '*');
         res.header('Access-Control-Allow-Headers', 'X-Requested-With');
@@ -18,9 +18,7 @@ module.exports = function(app) {
         next();
     });
 
-    initApi(app, root, 'cdnjs', schemas.cdnjsLibrary);
-    initApi(app, root, 'google', schemas.googleLibrary);
-    initApi(app, root, 'jsdelivr', schemas.jsDelivrLibrary);
+    initV1(app);
 
     app.get('/packages.php', function(req, res) {
         request.get({
@@ -32,7 +30,15 @@ module.exports = function(app) {
     });
 };
 
-function initApi(app, root, cdn, schema) {
+function initV1(app) {
+    var root = '/v1/';
+
+    ['bootstrap', 'cdnjs', 'google', 'jsdelivr'].forEach(function(name) {
+        initV1Api(app, root, name, schemas[name + 'Library']);
+    });
+}
+
+function initV1Api(app, root, cdn, schema) {
     app.get(root + cdn + '/libraries/:name/:version', function(req, res) {
         var version = req.params.version;
 
