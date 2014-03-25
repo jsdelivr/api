@@ -33,7 +33,7 @@ module.exports = function(app) {
 function initV1(app) {
     var root = '/v1/';
 
-    ['bootstrap', 'cdnjs', 'google', 'jsdelivr'].forEach(function(name) {
+    ['bootstrap', 'cdnjs', 'google', 'jsdelivr', 'jquery'].forEach(function(name) {
         initV1Api(app, root, name, schemas[name + 'Library']);
     });
 }
