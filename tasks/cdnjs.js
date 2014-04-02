@@ -1,3 +1,5 @@
+'use strict';
+
 var async = require('async');
 var request = require('request');
 var sugar = require('object-sugar');
@@ -8,7 +10,7 @@ var Library = require('../schemas').cdnjsLibrary;
 
 
 module.exports = function(cb) {
-    var url = 'https://cdnjs.com/packages.json';
+    var url = 'http://api.cdnjs.com/libraries?fields=version,description,homepage,description,keywords,assets,filename,author';
 
     console.log('Starting to update cdnjs data');
 
@@ -16,7 +18,7 @@ module.exports = function(cb) {
         url: url,
         json: true
     }, function(err, res, data) {
-        if(err || !data || !data.packages) {
+        if(err || !data || !data.results) {
             console.error('Failed to update cdnjs data!', err, data);
 
             return cb(err);
@@ -24,7 +26,7 @@ module.exports = function(cb) {
 
         console.log('Fetched cdnjs data');
 
-        async.each(data.packages, function(library, cb) {
+        async.each(data.results, function(library, cb) {
             sugar.getOrCreate(Library, {
                 name: library.name
             }, function(err, d) {
