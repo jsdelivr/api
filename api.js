@@ -3,6 +3,7 @@
 var request = require('request');
 var rest = require('rest-sugar');
 var sugar = require('object-sugar');
+var is = require('annois');
 
 var schemas = require('./schemas');
 var getAll = require('./lib/get_all');
@@ -70,7 +71,7 @@ function initV1Api(app, root, cdn, schema) {
                 return res.send(404);
             }
 
-            res.json(library.length? [library]: []);
+            res.json(is.object(library)? [library]: []);
         });
     });
 
