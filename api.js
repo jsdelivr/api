@@ -70,7 +70,7 @@ function initV1Api(app, root, cdn, schema) {
                 return res.send(404);
             }
 
-            res.json(library? [library]: []);
+            res.json(library.length? [library]: []);
         });
     });
 
