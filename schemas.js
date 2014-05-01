@@ -1,3 +1,5 @@
+'use strict';
+
 var sugar = require('object-sugar');
 
 var schema = sugar.schema();
@@ -7,6 +9,7 @@ var fields = {
     name: String,
     zip: String,
     mainfile: String,
+    mainfile2: String, // jsdelivr specific
     lastversion: String,
     description: String,
     homepage: String,

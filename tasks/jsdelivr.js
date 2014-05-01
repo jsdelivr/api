@@ -1,3 +1,5 @@
+'use strict';
+
 var async = require('async');
 var request = require('request');
 var sugar = require('object-sugar');
