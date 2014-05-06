@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+'use strict';
+
 var express = require('express');
 var taskist = require('taskist');
 var sugar = require('object-sugar');
