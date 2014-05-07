@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 
+require('log-timestamp');
+
 var async = require('async');
 var express = require('express');
 var taskist = require('taskist');
@@ -87,7 +89,7 @@ function serve(cb) {
     });
 
     app.listen(port, function() {
-        console.log('%s: Node (version: %s) %s started on %d ...', Date(Date.now() ), process.version, process.argv[1], port);
+        console.log('Node (version: %s) %s started on %d ...', process.version, process.argv[1], port);
 
         cb(null);
     });

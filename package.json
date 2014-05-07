@@ -21,6 +21,7 @@
     "annozip": "0.2.1",
     "async": "^0.8.0",
     "express": "3.4.8",
+    "log-timestamp": "^0.1.1",
     "minimatch": "~0.2.14",
     "mongoose": "^3.8.8",
     "mongoose-sugar": "^0.8.3",
