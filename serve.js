@@ -1,13 +1,23 @@
 #!/usr/bin/env node
 'use strict';
 
+var async = require('async');
 var express = require('express');
 var taskist = require('taskist');
-var sugar = require('object-sugar');
+var sugars = {
+    mongo: require('mongoose-sugar'),
+    object: require('object-sugar')
+};
 
 var config = require('./config');
-var tasks = require('./tasks');
-var api = require('./api');
+var schemas = require('./schemas')({
+    cdns: config.cdns
+});
+var tasks = require('./tasks')({
+    sugars: sugars,
+    schemas: schemas
+});
+var api = require('./api')(sugars.object, config.cdns, schemas.object);
 
 
 if(require.main === module) {
@@ -16,14 +26,21 @@ if(require.main === module) {
 
 module.exports = main;
 function main(cb) {
-    var db = 'db';
+    cb = cb || noop;
 
-    sugar.connect(db, function(err) {
+    var mongoUrl = sugars.mongo.parseAddress(config.mongo);
+
+    console.log('Connecting to databases');
+
+    async.parallel([
+        sugars.mongo.connect.bind(null, mongoUrl),
+        sugars.object.connect.bind(null, 'db')
+    ], function(err) {
         if(err) {
-            return console.error('Failed to connect to database', db, err);
+            return console.error('Failed to connect to database', err);
         }
 
-        console.log('Connected to database');
+        console.log('Connected to databases');
 
         console.log('Initializing tasks');
         initTasks();
