@@ -3,23 +3,20 @@
 
 require('log-timestamp');
 
-var async = require('async');
 var express = require('express');
 var taskist = require('taskist');
-var sugars = {
-    mongo: require('mongoose-sugar'),
-    object: require('object-sugar')
-};
+var sugar = require('object-sugar');
 
 var config = require('./config');
 var schemas = require('./schemas')({
     cdns: config.cdns
 });
 var tasks = require('./tasks')({
-    sugars: sugars,
-    schemas: schemas
+    url: config.syncUrl,
+    cdns: config.cdns,
+    schemas: schemas.object
 });
-var api = require('./api')(sugars.object, config.cdns, schemas.object);
+var api = require('./api')(sugar, config.cdns, schemas.object);
 
 
 if(require.main === module) {
@@ -30,19 +27,14 @@ module.exports = main;
 function main(cb) {
     cb = cb || noop;
 
-    var mongoUrl = sugars.mongo.parseAddress(config.mongo);
+    console.log('Connecting to database');
 
-    console.log('Connecting to databases');
-
-    async.parallel([
-        sugars.mongo.connect.bind(null, mongoUrl),
-        sugars.object.connect.bind(null, 'db')
-    ], function(err) {
+    sugar.connect('db', function(err) {
         if(err) {
             return console.error('Failed to connect to database', err);
         }
 
-        console.log('Connected to databases');
+        console.log('Connected to database');
 
         console.log('Initializing tasks');
         initTasks();

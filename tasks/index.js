@@ -1,1 +1,1 @@
-module.exports = require('annoinject')('sugars', 'schemas');
+module.exports = require('annoinject')('url', 'cdns', 'schemas');
