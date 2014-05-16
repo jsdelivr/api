@@ -60,7 +60,9 @@ module.exports = function(imports) {
 
             async.each(libraries, function(library, cb) {
                 if(retained.indexOf(library.name) === -1) {
-                    return sugar.remove(schema, library._id, cb);
+                    return sugar.remove(schema, library._id, {
+                        hard: true
+                    }, cb);
                 }
 
                 cb();
