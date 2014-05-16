@@ -3,11 +3,13 @@
 var url = require('url');
 
 var async = require('async');
-var request = require('request');
-var sugar = require('object-sugar');
+var prop = require('annofp').prop;
 
 
 module.exports = function(imports) {
+    var sugar = imports.sugar;
+    var request = imports.request;
+
     return function(cb) {
         async.each(imports.cdns, function(cdn, cb) {
             console.log('Starting to sync', cdn);
@@ -36,13 +38,33 @@ module.exports = function(imports) {
                         return cb(err);
                     }
 
-                    // TODO: delete projects that were not found
+                    removeExtras(schema, libraries.map(prop('name')), function(err) {
+                        if(err) {
+                            return cb(err);
+                        }
 
-                    console.log('Synced', cdn);
+                        console.log('Synced', cdn);
 
-                    cb();
+                        cb();
+                    });
                 });
             });
         }, cb);
     };
+
+    function removeExtras(schema, retained, cb) {
+        sugar.getAll(schema, function(err, libraries) {
+            if(err) {
+                return cb(err);
+            }
+
+            async.each(libraries, function(library, cb) {
+                if(retained.indexOf(library.name) === -1) {
+                    return sugar.remove(schema, library._id, cb);
+                }
+
+                cb();
+            }, cb);
+        });
+    }
 };

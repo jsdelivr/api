@@ -11,12 +11,14 @@ var config = require('./config');
 var schemas = require('./schemas')({
     cdns: config.cdns
 });
+var api = require('./api')(sugar, config.cdns, schemas.object);
 var tasks = require('./tasks')({
+    sugar: sugar,
+    request: require('request'),
     url: config.syncUrl,
     cdns: config.cdns,
     schemas: schemas.object
 });
-var api = require('./api')(sugar, config.cdns, schemas.object);
 
 
 if(require.main === module) {

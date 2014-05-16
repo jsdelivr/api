@@ -9,7 +9,8 @@ var getAll = require('./lib/get_all');
 
 
 module.exports = function(sugar, cdns, schemas) {
-    sugar.getAll = getAll; // XXX: monkeypatching getAll for extra functionality
+    // XXX: monkeypatching getAll for extra functionality. it would be nicer to decorate it
+    sugar.getAll = getAll;
 
     return function(app) {
         app.all('*', function(req, res, next) {
