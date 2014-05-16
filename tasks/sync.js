@@ -36,6 +36,8 @@ module.exports = function(imports) {
                         return cb(err);
                     }
 
+                    // TODO: delete projects that were not found
+
                     console.log('Synced', cdn);
 
                     cb();
