@@ -28,7 +28,8 @@
     "annois": "~0.3.0",
     "annozip": "0.2.1",
     "minimatch": "~0.2.14",
-    "github": "~0.1.14"
+    "github": "~0.1.14",
+    "fast-levenshtein": "~1.0.0"
   },
   "repository": {
     "type": "git",
