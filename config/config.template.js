@@ -12,5 +12,6 @@ module.exports = {
         key: 'replace this',
         secret: 'replace this',
         zoneId: 0 // replace with some zone id
-    }
+    },
+    github: '' // replace with github token
 };
