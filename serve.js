@@ -19,6 +19,7 @@ var tasks = require('./tasks')({
     cdns: config.cdns,
     schemas: schemas.object
 });
+var purgeCache = require('./lib/purge')(config.maxcdn);
 
 
 if(require.main === module) {
@@ -48,7 +49,21 @@ function main(cb) {
 
 function initTasks() {
     taskist(config.tasks, tasks, {
-        instant: true
+        instant: function(err) {
+            if(err) {
+                return console.error(err);
+            }
+
+            console.log('Purging cache');
+
+            purgeCache(function(err) {
+                if(err) {
+                    return console.error(err);
+                }
+
+                console.log('Cache purged');
+            });
+        }
     });
 }
 

@@ -24,6 +24,7 @@
     "log-timestamp": "^0.1.1",
     "minimatch": "~0.2.14",
     "object-sugar": "0.7.6",
+    "maxcdn": "0.1.5",
     "parse-env": "0.2.2",
     "request": "2.33.0",
     "require-dir": "0.1.0",
