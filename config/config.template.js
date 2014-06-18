@@ -1,11 +1,11 @@
 module.exports = {
     port: 8000,
     tasks: {
-        bootstrap: {minute: 1},
-        cdnjs: {minute: 1},
-        google: {minute: 1},
-        jsdelivr: {minute: 1},
-        jquery: {minute: 1}
+        bootstrap: {minute: 0},
+        cdnjs: {minute: 10},
+        google: {minute: 20},
+        jsdelivr: {minute: 30},
+        jquery: {minute: 40}
     },
     maxcdn: {
         alias: 'replace this',
