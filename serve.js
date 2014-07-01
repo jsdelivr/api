@@ -58,7 +58,7 @@ function initTasks() {
 
             purgeCache(function(err) {
                 if(err) {
-                    return console.error(err);
+                    return console.dir(err);
                 }
 
                 console.log('Cache purged');
