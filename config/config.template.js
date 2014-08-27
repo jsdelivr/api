@@ -1,7 +1,7 @@
 module.exports = {
     port: 8000,
     //cdns: ['bootstrap', 'cdnjs', 'google', 'jsdelivr', 'jquery'],
-    cdns: ['bootstrap', 'cdnjs', 'google'],
+    cdns: ['bootstrap', 'cdnjs', 'google', 'jsdelivr'],
     syncUrl: 'http://jsdelivrapi-sync.aws.af.cm/data/',
     tasks: {
         sync: {minute: 0}
