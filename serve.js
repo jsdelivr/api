@@ -13,13 +13,13 @@ var schemas = require('./schemas')({
     cdns: config.cdns
 });
 var api = require('./api')(sugar, config.cdns, schemas.object);
-var tasks = require('./tasks')({
-    sugar: sugar,
-    request: require('request'),
-    url: config.syncUrl,
-    cdns: config.cdns,
-    schemas: schemas.object
-});
+var imports = {
+  sugar: sugar,
+  request: require('request'),
+  url: config.syncUrl,
+  cdns: config.cdns,
+  schemas: schemas.object
+};
 var purgeCache = require('./lib/purge')(config.maxcdn);
 
 
@@ -58,32 +58,41 @@ function initTasks() {
 
     rule.minute = new schedule.Range(0, 59, pattern.minute);
 
+    //schedule according to rule
     schedule.scheduleJob(rule, function(name) {
-
-      console.log("running task...",name,pattern);
-
-      try
-      {
-        tasks[name](function(err) {
-          if(err) {
-            return console.error(err);
-          }
-
-          console.log('Purging cache');
-
-          purgeCache(function(err) {
-            if(err) {
-              return console.dir(err);
-            }
-
-            console.log('Cache purged');
-          });
-        });
-      } catch(e) {
-        console.error(e);
-      }
+      runTask(name);
     }.bind(null,name));
+
+    //kick off task first run
+    runTask(name);
   });
+}
+
+function runTask(name) {
+
+  console.log("running task...",name);
+
+  try
+  {
+    require("./tasks/" + name + ".js")(imports)(function(err) {
+
+      if(err) {
+        return console.error(err);
+      }
+
+      console.log('Purging cache');
+
+      purgeCache(function(err) {
+        if(err) {
+          return console.dir(err);
+        }
+
+        console.log('Cache purged');
+      });
+    });
+  } catch(e) {
+    console.error(e);
+  }
 }
 
 function serve(cb) {
