@@ -19,8 +19,11 @@ module.exports = function(imports) {
                 json: true
             }, function(err, res, libraries) {
 
-                if(err || res.statusCode !== 200) {
+                if(err || !res) {
                     return cb(err || new Error("Request to sync " + cdn + " from " + _url + " failed"));
+                }
+                else if(res.statusCode !== 200) {
+                  return cb(new Error("Request to sync " + cdn + " from " + _url + " failed"));
                 }
 
                 var schema = imports.schemas[cdn + 'Library'];
