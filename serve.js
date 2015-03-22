@@ -12,16 +12,6 @@ var config = require('./config');
 var schemas = require('./schemas')({
     cdns: config.cdns
 });
-var api = require('./api')(sugar, config.cdns, schemas.object);
-var imports = {
-  sugar: sugar,
-  request: require('request'),
-  url: config.syncUrl,
-  cdns: config.cdns,
-  schemas: schemas.object
-};
-var purgeCache = require('./lib/purge')(config.maxcdn);
-
 
 if(require.main === module) {
     main();
@@ -49,7 +39,6 @@ function main(cb) {
 }
 
 function initTasks() {
-  console.log('Initializing tasks');
 
   _.each(Object.keys(config.tasks),function(name) {
 
@@ -71,6 +60,13 @@ function initTasks() {
 function runTask(name) {
 
   console.log("running task...",name);
+  var imports = {
+    sugar: sugar,
+    request: require('request'),
+    url: config.syncUrl,
+    cdns: config.cdns,
+    schemas: schemas.object
+  };
 
   try
   {
@@ -82,6 +78,7 @@ function runTask(name) {
 
       console.log('Purging cache');
 
+      var purgeCache = require('./lib/purge')(config.maxcdn);
       purgeCache(function(err) {
         if(err) {
           return console.dir(err);
@@ -100,6 +97,7 @@ function serve(cb) {
 
     var app = express();
     var port = config.port;
+    var api = require('./api')(sugar, config.cdns, schemas.object);
 
     app.configure(function() {
         app.set('port', port);
