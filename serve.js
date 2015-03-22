@@ -4,7 +4,8 @@
 require('log-timestamp');
 
 var express = require('express');
-var taskist = require('taskist');
+var _ = require('lodash');
+var schedule = require('node-schedule');
 var sugar = require('object-sugar');
 
 var config = require('./config');
@@ -48,23 +49,41 @@ function main(cb) {
 }
 
 function initTasks() {
-    taskist(config.tasks, tasks, {
-        instant: function(err) {
+  console.log('Initializing tasks');
+
+  _.each(Object.keys(config.tasks),function(name) {
+
+    var pattern = config.tasks[name]
+      ,  rule = new schedule.RecurrenceRule();
+
+    rule.minute = new schedule.Range(0, 59, pattern.minute);
+
+    schedule.scheduleJob(rule, function(name) {
+
+      console.log("running task...",name,pattern);
+
+      try
+      {
+        tasks[name](function(err) {
+          if(err) {
+            return console.error(err);
+          }
+
+          console.log('Purging cache');
+
+          purgeCache(function(err) {
             if(err) {
-                return console.error(err);
+              return console.dir(err);
             }
 
-            console.log('Purging cache');
-
-            purgeCache(function(err) {
-                if(err) {
-                    return console.dir(err);
-                }
-
-                console.log('Cache purged');
-            });
-        }
-    });
+            console.log('Cache purged');
+          });
+        });
+      } catch(e) {
+        console.error(e);
+      }
+    }.bind(null,name));
+  });
 }
 
 function serve(cb) {
