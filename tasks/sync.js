@@ -12,13 +12,15 @@ module.exports = function(imports) {
 
     return function(cb) {
         async.each(imports.cdns, function(cdn, cb) {
-            console.log('Starting to sync', cdn);
+            var _url = url.resolve(imports.url, cdn + '.json');
+            console.log('Starting to sync %s from source %s', cdn,_url);
 
-            request.get(url.resolve(imports.url, cdn + '.json'), {
+            request.get(_url, {
                 json: true
             }, function(err, res, libraries) {
-                if(err) {
-                    return cb(err);
+
+                if(err || res.statusCode !== 200) {
+                    return cb(err || new Error("Request to sync " + cdn + " from " + _url + " failed"));
                 }
 
                 var schema = imports.schemas[cdn + 'Library'];
