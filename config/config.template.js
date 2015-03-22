@@ -4,7 +4,7 @@ module.exports = {
     cdns: ['bootstrap', 'cdnjs', 'google', 'jsdelivr'],
     syncUrl: 'http://jsdelivrapi-sync.aws.af.cm/data/',
     tasks: {
-        sync: {minute: 0}
+        sync: {minute: 2}
     },
     maxcdn: {
         alias: 'replace this',
