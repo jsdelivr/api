@@ -101,6 +101,7 @@ function runTask(name, cb) {
       });
     } catch (e) {
       console.error(e);
+      cb();
     }
   }
   else {
