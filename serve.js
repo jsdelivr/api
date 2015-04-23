@@ -22,7 +22,7 @@ if (require.main === module) {
 }
 
 module.exports = main;
-function main() {
+function main(cb) {
 
   async.series([
     function (next) {
@@ -35,6 +35,9 @@ function main() {
     if (err) {
       console.log("Error starting application!", err);
       process.exit();
+    }
+    else {
+      cb();
     }
   });
 }
