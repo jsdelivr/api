@@ -3,143 +3,163 @@
 
 require('log-timestamp');
 
-var express = require('express');
-var _ = require('lodash');
-var schedule = require('node-schedule');
-var sugar = require('object-sugar');
+var express = require('express')
+  , async = require('async')
+  , _ = require('lodash')
 
-var config = require('./config');
-var schemas = require('./schemas')({
+  , sugar = require('object-sugar')
+
+  , config = require('./config')
+  , schemas = require('./schemas')({
     cdns: config.cdns
-});
+  });
 
-if(require.main === module) {
-    main();
+var db = config.db
+  , taskUpdating = {};
+
+if (require.main === module) {
+  main();
 }
 
 module.exports = main;
-function main(cb) {
-    cb = cb || noop;
+function main() {
 
-    console.log('Connecting to database');
+  async.series([
+    function (next) {
+      sugar.connect(db, next)
+    },
+    serve,
+    runTasks
+  ], function (err) {
 
-    sugar.connect('db', function(err) {
-        if(err) {
-            return console.error('Failed to connect to database', err);
-        }
-
-        console.log('Connected to database');
-
-        console.log('Initializing tasks');
-        initTasks();
-
-        console.log('Starting server');
-        serve(cb);
-    });
-}
-
-function initTasks() {
-
-  _.each(Object.keys(config.tasks),function(name) {
-
-    var pattern = config.tasks[name]
-      ,  rule = new schedule.RecurrenceRule();
-
-    rule.minute = new schedule.Range(0, 59, pattern.minute);
-
-    //schedule according to rule
-    schedule.scheduleJob(rule, function(name) {
-      runTask(name);
-    }.bind(null,name));
-
-    //kick off task first run
-    runTask(name);
+    if (err) {
+      console.log("Error starting application!", err);
+      process.exit();
+    }
   });
 }
 
-function runTask(name) {
+var intervalSet = false;
+function runTasks(cb) {
+  console.log('Running tasks');
 
-  console.log("running task...",name);
-  var imports = {
-    sugar: sugar,
-    request: require('request'),
-    url: config.syncUrl,
-    cdns: config.cdns,
-    schemas: schemas.object
-  };
+  // first kick off the tasks
+  async.eachSeries(Object.keys(config.tasks), function (name, done) {
+    taskUpdating[name] = false;
+    runTask(name, done);
+  }, function (err) {
 
-  try
-  {
-    require("./tasks/" + name + ".js")(imports)(function(err) {
+    if (err) console.error("Error initializing tasks", err);
 
-      if(err) {
-        return console.error(err);
-      }
+    //then set the interval
+    if (!intervalSet) {
+      intervalSet = true;
+      var interval = 6 * (5 * 1e4);
 
-      console.log('Purging cache');
+      // we want to space out the start of each sync cycle by 5 minutes each
+      setInterval(function () {
+        runTasks(function () {
+          console.log("libraries synced!");
+          return true;
+        });
+      }, interval);
+    }
 
-      var purgeCache = require('./lib/purge')(config.maxcdn);
-      purgeCache(function(err) {
-        if(err) {
-          return console.dir(err);
-        }
+    if (cb)
+      cb();
+  });
+}
 
-        console.log('Cache purged');
+function runTask(name, cb) {
+
+  if(!taskUpdating[name]) {
+    taskUpdating[name] = true;
+    console.log("running task...", name);
+
+    try {
+      require("./tasks/" + name + ".js")(sugar, schemas.object, function (err) {
+
+        if (err)
+          console.error("Error in task ", name, err);
+        else
+          console.log("Task %s complete", name);
+
+        // don't wait for the cache to be cleared
+        taskUpdating[name] = false;
+        cb();
+
+        console.log('Purging cache');
+
+        var purgeCache = require('./lib/purge')(config.maxcdn);
+        purgeCache(function (err) {
+          if (err) {
+            return console.error(err);
+          }
+
+          console.log('Cache purged');
+        });
       });
-    });
-  } catch(e) {
-    console.error(e);
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  else {
+    console.log("Task %s is already running", name);
+    cb();
   }
 }
 
 function serve(cb) {
-    cb = cb || noop;
+  cb = cb || noop;
 
-    var app = express();
-    var port = config.port;
-    var api = require('./api')(sugar, config.cdns, schemas.object);
+  var app = express();
+  var port = config.port;
+  var api = require('./api');
 
-    app.configure(function() {
-        app.set('port', port);
+  app.configure(function () {
+    app.set('port', port);
 
-        app.disable('etag');
+    app.disable('etag');
 
-        app.use(express.logger('dev'));
+    app.use(express.logger('dev'));
 
-        app.use(app.router);
-    });
+    app.use(app.router);
+  });
 
-    app.configure('development', function() {
-        app.use(express.errorHandler());
-    });
+  app.configure('development', function () {
+    app.use(express.errorHandler());
+  });
 
-    api(app);
+  api(app, sugar, schemas.object, function () {
 
     process.on('exit', terminator);
 
     ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT', 'SIGBUS',
-    'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGPIPE', 'SIGTERM'
-    ].forEach(function(element) {
-        process.on(element, function() { terminator(element); });
-    });
+      'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGPIPE', 'SIGTERM'
+    ].forEach(function (element) {
+        process.on(element, function () {
+          terminator(element);
+        });
+      });
 
-    app.listen(port, function() {
-        console.log('Node (version: %s) %s started on %d ...', process.version, process.argv[1], port);
-
-        cb(null);
+    app.listen(port, function () {
+      console.log('Node (version: %s) %s started on %d ...', process.version, process.argv[1], port);
+      cb();
     });
+  });
 }
 
 function terminator(sig) {
-    if(typeof sig === 'string') {
-        console.log('%s: Received %s - terminating Node server ...',
-            Date(Date.now()), sig);
+  if (typeof sig === 'string') {
+    console.log('%s: Received %s - terminating Node server ...',
+      Date(Date.now()), sig);
 
-        process.exit(1);
-    }
+    process.exit(1);
+  }
 
-    console.log('%s: Node server stopped.', Date(Date.now()) );
+  console.log('%s: Node server stopped.', Date(Date.now()));
 }
 
-function noop() {}
+function noop() {
+}
 
