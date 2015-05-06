@@ -2,15 +2,16 @@
 
 var async = require('async')
   , url = require('url')
+  , _ = require('lodash')
   , request = require('request')
-  , prop = require('annofp').prop
+
   , config = require('../config');
 
 var db = config.db;
 
-module.exports = function (sugar, schemas, cb) {
+module.exports = function (dbs, cb) {
 
-  async.eachSeries(config.cdns, function (cdn, cb) {
+  async.eachSeries(config.cdns, function (cdn, next) {
 
     var _url = url.resolve(config.syncUrl, cdn + '.json');
     console.log('Starting to sync %s from source %s', cdn, _url);
@@ -26,54 +27,42 @@ module.exports = function (sugar, schemas, cb) {
         return cb(new Error("Request to sync " + cdn + " from " + _url + " failed"));
       }
 
-      var schema = schemas[cdn + 'Library'];
+      var schemaKeys = Object.keys(dbs._schema);
+      var collection = dbs[cdn];
 
-      async.each(libraries, function (library, cb) {
+      async.each(libraries, function (library, done) {
 
-        sugar.getOrCreate(schema, {
-          name: library.name
-        }, function (err, d) {
-          if (err) {
-            console.log("error getting or creating", library.name);
-            return cb(err);
-          }
-
-          sugar.update(schema, d._id, library, cb);
+        // create the db item by selecting desired values from synced data and filling in absent data w/ defaults
+        var item = _.pick(library, schemaKeys);
+        _.each(schemaKeys, function(key) {
+          if(!item[key])
+            item[key] = dbs._schema[key];
         });
-      }, function (err) {
-        if (err) {
-          return cb(err);
+
+        // only insert if the item does not currently exist
+        var name = library.name || null;
+        if(name) {
+          var _item = collection.findOne({"name":name});
+          if(!_item) {
+            collection.insert(item);
+          }
+          else {
+            _.each(item, function(v,k) {
+              _item[k] = v;
+            });
+            collection.update(_item);
+          }
         }
 
-        removeExtras(sugar, schema, libraries.map(prop('name')), function (err) {
+        done();
+      }, function (err) {
+        if (err) {
+          return next(err);
+        }
 
-          if (err) {
-            return cb(err);
-          }
-
-          console.log('Synced', cdn);
-          cb();
-        });
+        console.log('Synced', cdn);
+        next();
       });
     });
   }, cb);
 };
-
-function removeExtras(sugar, schema, retained, cb) {
-
-  sugar.getAll(schema, function (err, libraries) {
-    if (err) {
-      return cb(err);
-    }
-
-    async.each(libraries, function (library, cb) {
-      if (retained.indexOf(library.name) === -1) {
-        return sugar.remove(schema, library._id, {
-          hard: true
-        }, cb);
-      }
-
-      cb();
-    }, cb);
-  });
-}

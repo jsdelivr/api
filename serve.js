@@ -4,15 +4,12 @@
 require('log-timestamp');
 
 var express = require('express')
+  , morgan = require('morgan')
   , async = require('async')
   , _ = require('lodash')
 
-  , sugar = require('object-sugar')
-
-  , config = require('./config')
-  , schemas = require('./schemas')({
-    cdns: config.cdns
-  });
+  , dbs = require("./db")
+  , config = require('./config');
 
 var db = config.db
   , taskUpdating = {};
@@ -25,9 +22,6 @@ module.exports = main;
 function main(cb) {
 
   async.series([
-    function (next) {
-      sugar.connect(db, next)
-    },
     serve,
     runTasks
   ], function (err) {
@@ -36,9 +30,8 @@ function main(cb) {
       console.log("Error starting application!", err);
       process.exit();
     }
-    else {
+    else if (cb)
       cb();
-    }
   });
 }
 
@@ -80,7 +73,7 @@ function runTask(name, cb) {
     console.log("running task...", name);
 
     try {
-      require("./tasks/" + name + ".js")(sugar, schemas.object, function (err) {
+      require("./tasks/" + name + ".js")(dbs, function (err) {
 
         if (err)
           console.error("Error in task ", name, err);
@@ -116,40 +109,17 @@ function runTask(name, cb) {
 function serve(cb) {
   cb = cb || noop;
 
-  var app = express();
-  var port = config.port;
-  var api = require('./api');
+  var app = express()
+    , port = config.port;
 
-  app.configure(function () {
-    app.set('port', port);
+  app.use(morgan('dev'));
 
-    app.disable('etag');
+  // v1 routes
+  app.use("/v1", require("./routes.v1/libraries"));
 
-    app.use(express.logger('dev'));
-
-    app.use(app.router);
-  });
-
-  app.configure('development', function () {
-    app.use(express.errorHandler());
-  });
-
-  api(app, sugar, schemas.object, function () {
-
-    process.on('exit', terminator);
-
-    ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT', 'SIGBUS',
-      'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGPIPE', 'SIGTERM'
-    ].forEach(function (element) {
-        process.on(element, function () {
-          terminator(element);
-        });
-      });
-
-    app.listen(port, function () {
-      console.log('Node (version: %s) %s started on %d ...', process.version, process.argv[1], port);
-      cb();
-    });
+  app.listen(port, function () {
+    console.log('Node (version: %s) %s started on %d ...', process.version, process.argv[1], port);
+    cb();
   });
 }
 
