@@ -22,6 +22,7 @@ module.exports = main;
 function main(cb) {
 
   async.series([
+    init,
     serve,
     runTasks
   ], function (err) {
@@ -50,9 +51,9 @@ function runTasks(cb) {
     //then set the interval
     if (!intervalSet) {
       intervalSet = true;
-      var interval = 6 * (5 * 1e4);
+      var interval = 6 * (2 * 1e4);
 
-      // we want to space out the start of each sync cycle by 5 minutes each
+      // we want to space out the start of each sync cycle by 2 minutes each
       setInterval(function () {
         runTasks(function () {
           console.log("libraries synced!");
@@ -113,9 +114,15 @@ function serve(cb) {
     , port = config.port;
 
   app.use(morgan('dev'));
+  app.set('json spaces', 2);
 
   // v1 routes
   app.use("/v1", require("./routes.v1/libraries"));
+
+  // catch all
+  app.all("*", function (req, res) {
+    res.status(404).json({status: 404, message: "Requested url " + req.url + " not found."});
+  });
 
   app.listen(port, function () {
     console.log('Node (version: %s) %s started on %d ...', process.version, process.argv[1], port);
@@ -123,7 +130,24 @@ function serve(cb) {
   });
 }
 
+function init(cb) {
+
+  process.on('exit', terminator);
+
+  ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT', 'SIGBUS',
+    'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGPIPE', 'SIGTERM'
+  ].forEach(function(element) {
+      process.on(element, function() { terminator(element); });
+    });
+
+  cb();
+}
+
 function terminator(sig) {
+
+  // close loki db
+  dbs._db.close();
+
   if (typeof sig === 'string') {
     console.log('%s: Received %s - terminating Node server ...',
       Date(Date.now()), sig);
