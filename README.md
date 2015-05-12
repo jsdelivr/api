@@ -71,5 +71,3 @@ Get libraries matching to any part of query (defaults to `and`)
 ```
 http://api.jsdelivr.com/v1/jsdelivr/libraries?name=jquery&zip=anything*&op=or
 ```
-
-Built with [rest-sugar](https://github.com/bebraw/rest-sugar)
