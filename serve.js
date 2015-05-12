@@ -51,9 +51,9 @@ function runTasks(cb) {
     //then set the interval
     if (!intervalSet) {
       intervalSet = true;
-      var interval = 6 * (2 * 1e4);
+      var interval = 6 * (10 * 1e4);
 
-      // we want to space out the start of each sync cycle by 2 minutes each
+      // we want to space out the start of each sync cycle by 10 minutes each
       setInterval(function () {
         runTasks(function () {
           console.log("libraries synced!");
