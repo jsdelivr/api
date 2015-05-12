@@ -24,15 +24,13 @@
     "fast-levenshtein": "~1.0.0",
     "lodash": "^3.5.0",
     "log-timestamp": "^0.1.1",
+    "lokijs": "^1.2.5",
     "maxcdn": "0.1.5",
     "minimatch": "^2.0.7",
     "morgan": "^1.5.2",
-    "node-schedule": "^0.2.6",
-    "object-sugar": "0.7.6",
     "parse-env": "^0.2.2",
     "request": "2.53.0",
-    "require-dir": "^0.1.0",
-    "rest-sugar": "0.6.3"
+    "require-dir": "^0.1.0"
   },
   "repository": {
     "type": "git",

@@ -1,13 +1,5 @@
 'use strict';
 
-var request = require('request')
-  , rest = require('rest-sugar')
-  , config = require('./config');
-
-var is = require('annois');
-
-var db = config.db;
-
 module.exports = function (app, sugar, schemas, cb) {
 
   app.all('*', function (req, res, next) {

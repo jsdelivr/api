@@ -4,8 +4,8 @@ module.exports = {
   cdns: ['bootstrap', 'cdnjs', 'google', 'jsdelivr'],
   //cdns: ['bootstrap','google'],
   db: 'db',
-  syncUrl: 'http://localhost:8000/data/',
-  //syncUrl: 'http://jsdelivrapi-sync.aws.af.cm/data/',
+  //syncUrl: 'http://localhost:8000/data/',
+  syncUrl: 'http://jsdelivrapi-sync.aws.af.cm/data/',
   tasks: {
     sync: {minute: 5}
   },

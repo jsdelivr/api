@@ -1,13 +1,5 @@
 'use strict';
 
-var fp = require('annofp');
-var prop = fp.prop;
-var values = fp.values;
-
-var config = require('../config');
-var github = require('./github')(config.github);
-
-
 module.exports = function(cb) {
     getFiles(function(err, files) {
         if(err) {
