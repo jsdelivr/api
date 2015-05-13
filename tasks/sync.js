@@ -34,22 +34,17 @@ module.exports = function (dbs, cb) {
 
         // create the db item by selecting desired values from synced data and filling in absent data w/ defaults
         var item = _.pick(library, schemaKeys);
-        _.each(schemaKeys, function(key) {
-          if(!item[key])
-            item[key] = dbs._schema[key];
-        });
+        _.defaults(item, dbs._schema);
 
         // only insert if the item does not currently exist
         var name = library.name || null;
-        if(name) {
-          var _item = collection.findOne({"name":name});
-          if(!_item) {
+        if (name) {
+          var _item = collection.findOne({"name": name});
+          if (!_item) {
             collection.insert(item);
           }
           else {
-            _.each(item, function(v,k) {
-              _item[k] = v;
-            });
+            _.extend(_item, item);
             collection.update(_item);
           }
         }
