@@ -4,15 +4,12 @@
 require('log-timestamp');
 
 var express = require('express')
+  , morgan = require('morgan')
   , async = require('async')
   , _ = require('lodash')
 
-  , sugar = require('object-sugar')
-
-  , config = require('./config')
-  , schemas = require('./schemas')({
-    cdns: config.cdns
-  });
+  , dbs = require("./db")
+  , config = require('./config');
 
 var db = config.db
   , taskUpdating = {};
@@ -25,9 +22,7 @@ module.exports = main;
 function main(cb) {
 
   async.series([
-    function (next) {
-      sugar.connect(db, next)
-    },
+    init,
     serve,
     runTasks
   ], function (err) {
@@ -36,9 +31,8 @@ function main(cb) {
       console.log("Error starting application!", err);
       process.exit();
     }
-    else {
+    else if (cb)
       cb();
-    }
   });
 }
 
@@ -57,9 +51,9 @@ function runTasks(cb) {
     //then set the interval
     if (!intervalSet) {
       intervalSet = true;
-      var interval = 6 * (5 * 1e4);
+      var interval = 6 * (10 * 1e4);
 
-      // we want to space out the start of each sync cycle by 5 minutes each
+      // we want to space out the start of each sync cycle by 10 minutes each
       setInterval(function () {
         runTasks(function () {
           console.log("libraries synced!");
@@ -80,7 +74,7 @@ function runTask(name, cb) {
     console.log("running task...", name);
 
     try {
-      require("./tasks/" + name + ".js")(sugar, schemas.object, function (err) {
+      require("./tasks/" + name + ".js")(dbs, function (err) {
 
         if (err)
           console.error("Error in task ", name, err);
@@ -116,44 +110,44 @@ function runTask(name, cb) {
 function serve(cb) {
   cb = cb || noop;
 
-  var app = express();
-  var port = config.port;
-  var api = require('./api');
+  var app = express()
+    , port = config.port;
 
-  app.configure(function () {
-    app.set('port', port);
+  app.use(morgan('dev'));
+  app.set('json spaces', 2);
 
-    app.disable('etag');
+  // v1 routes
+  app.use("/v1", require("./routes.v1/libraries"));
 
-    app.use(express.logger('dev'));
-
-    app.use(app.router);
+  // catch all
+  app.all("*", function (req, res) {
+    res.status(404).json({status: 404, message: "Requested url " + req.url + " not found."});
   });
 
-  app.configure('development', function () {
-    app.use(express.errorHandler());
-  });
-
-  api(app, sugar, schemas.object, function () {
-
-    process.on('exit', terminator);
-
-    ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT', 'SIGBUS',
-      'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGPIPE', 'SIGTERM'
-    ].forEach(function (element) {
-        process.on(element, function () {
-          terminator(element);
-        });
-      });
-
-    app.listen(port, function () {
-      console.log('Node (version: %s) %s started on %d ...', process.version, process.argv[1], port);
-      cb();
-    });
+  app.listen(port, function () {
+    console.log('Node (version: %s) %s started on %d ...', process.version, process.argv[1], port);
+    cb();
   });
 }
 
+function init(cb) {
+
+  process.on('exit', terminator);
+
+  ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT', 'SIGBUS',
+    'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGPIPE', 'SIGTERM'
+  ].forEach(function(element) {
+      process.on(element, function() { terminator(element); });
+    });
+
+  cb();
+}
+
 function terminator(sig) {
+
+  // close loki db
+  dbs._db.close();
+
   if (typeof sig === 'string') {
     console.log('%s: Received %s - terminating Node server ...',
       Date(Date.now()), sig);

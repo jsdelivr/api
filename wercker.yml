@@ -23,5 +23,5 @@ deploy:
             code: af login --email $AF_EMAIL --passwd $AF_PASSWORD
         - script:
             name: update af
-            code: af -u dakulovgr@gmail.com update jsdelivr-api2
+            code: af -u dakulovgr@gmail.com update jsdelivr-api3
 

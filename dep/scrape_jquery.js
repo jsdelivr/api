@@ -1,14 +1,5 @@
 'use strict';
 
-var fp = require('annofp');
-var not = fp.not;
-var prop = fp.prop;
-var values = fp.values;
-
-var config = require('../config');
-var github = require('./github')(config.github);
-
-
 module.exports = function(cb) {
     getFiles(function(err, files) {
         if(err) {
@@ -24,9 +15,29 @@ function parse(files) {
 
     files.forEach(function(file) {
         var parts = file.split('/');
-        var name = parts[0];
-        var version = parts[1];
-        var filename = parts.slice(2).join('/');
+        var filename, name, version;
+
+        if(parts.length > 1) {
+            filename = parts.join('/');
+
+            if(parts[0] === 'mobile' || parts[0] === 'ui') {
+                name = 'jquery-' + parts[0];
+                version = parts[1];
+            }
+            else {
+                name = parseName(filename.split('/').slice(-1).join('/'));
+                version = parseVersion(filename);
+        }
+        }
+        else {
+            filename = parts[0];
+            name = parseName(filename);
+            version = parseVersion(filename);
+        }
+
+        if(!name) {
+            return;
+        }
 
         if(!(name in ret)) {
             ret[name] = {
@@ -70,10 +81,29 @@ function parse(files) {
     });
 }
 
+function parseName(str) {
+    if(str.indexOf('LICENSE') >= 0) {
+        return;
+    }
+
+    var parts = str.split('-');
+
+    if(parts.length) {
+        return str.split('-')[0];
+    }
+}
+
+function parseVersion(str) {
+    return str.split('-').slice(1).join('-').split('.').
+        slice(0, -1).join('.').
+        replace(/\.min/, '').
+        replace(/\.pack/, '');
+}
+
 function getFiles(cb) {
     github.repos.getContent({
-        user: 'maxcdn',
-        repo: 'bootstrap-cdn',
+        user: 'jquery',
+        repo: 'codeorigin.jquery.com',
         path: ''
     }, function(err, res) {
         if(err) {
@@ -81,12 +111,12 @@ function getFiles(cb) {
         }
 
         var sha = res.filter(function(v) {
-            return v.name === 'public';
+            return v.name === 'cdn';
         })[0].sha;
 
         github.gitdata.getTree({
-            user: 'maxcdn',
-            repo: 'bootstrap-cdn',
+            user: 'jquery',
+            repo: 'codeorigin.jquery.com',
             sha: sha,
             recursive: 1
         }, function(err, res) {
@@ -100,24 +130,9 @@ function getFiles(cb) {
 
             var filtered = res.tree.filter(function(v) {
                 return v.mode.indexOf('100') === 0;
-            }).map(prop('path')).
-                filter(contains('/')).
-                filter(not(startsWith('images/'))).
-                filter(not(startsWith('stylesheets/')));
+            }).map(prop('path'));
 
             cb(null, filtered);
         });
     });
-}
-
-function contains(str) {
-    return function(v) {
-        return v.indexOf(str) >= 0;
-    };
-}
-
-function startsWith(str) {
-    return function(v) {
-        return v.indexOf(str) === 0;
-    };
 }
