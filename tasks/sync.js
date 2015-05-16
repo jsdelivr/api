@@ -27,10 +27,12 @@ module.exports = function (dbs, cb) {
         return cb(new Error("Request to sync " + cdn + " from " + _url + " failed"));
       }
 
+      console.log('Files for sync of %s retrieved from source %s', cdn, _url);
+
       var schemaKeys = Object.keys(dbs._schema);
       var collection = dbs[cdn];
 
-      async.each(libraries, function (library, done) {
+      async.each(libraries || [], function (library, done) {
 
         // create the db item by selecting desired values from synced data and filling in absent data w/ defaults
         var item = _.pick(library, schemaKeys);
@@ -47,10 +49,17 @@ module.exports = function (dbs, cb) {
             _.extend(_item, item);
             collection.update(_item);
           }
+
+          // clean up
+          item = null;
         }
 
         done();
       }, function (err) {
+
+        // clean up
+        libraries.length = 0;
+
         if (err) {
           return next(err);
         }

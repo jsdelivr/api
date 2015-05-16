@@ -18,16 +18,19 @@ function _sendResult(err, result, req, res) {
       message: err.message || err,
       url: req.url
     };
-    res.status(err.code || 500).json(error);
+    res.status(error.status).json(error);
   }
   else {
-    res.status(200).json(result);
+    // all api.v1 responses are expected to be in the form of an array,
+    // even in the case of a <cdn>/libraries/<libraryName> request (which only ever returns a singular object)
+    res.status(200).json(_.isArray(result) ? result : [result]);
   }
 }
 
 router.param("cdn", function (req, res, next) {
 
-  var cdn = req.params.cdn
+  // normalize cdn case for collection existense check
+  var cdn = String(req.params.cdn).toLowerCase()
     , collection = dbs[cdn];
 
   if (collection) {
