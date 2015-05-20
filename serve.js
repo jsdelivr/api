@@ -119,6 +119,9 @@ function serve(cb) {
   // v1 routes
   app.use("/v1", require("./routes.v1/libraries"));
 
+  // v2 routes
+  app.use("/v2", require("./routes.v2/libraries"));
+
   // catch all
   app.all("*", function (req, res) {
     res.status(404).json({status: 404, message: "Requested url " + req.url + " not found."});
