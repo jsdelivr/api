@@ -116,6 +116,13 @@ function serve(cb) {
   app.use(morgan('dev'));
   app.set('json spaces', 2);
 
+  // setup CORS
+  app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    next();
+  });
+
   // v1 routes
   app.use("/v1", require("./routes.v1/libraries"));
 
