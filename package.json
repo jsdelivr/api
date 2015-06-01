@@ -15,13 +15,9 @@
   "author": "Juho Vepsalainen",
   "license": "MIT",
   "dependencies": {
-    "annofp": "^0.2.3",
     "annoinject": "^0.2.0",
-    "annois": "~0.3.0",
-    "annozip": "^0.2.1",
     "async": "^0.9.0",
     "express": "^4.12.3",
-    "fast-levenshtein": "~1.0.0",
     "lodash": "^3.5.0",
     "log-timestamp": "^0.1.1",
     "lokijs": "^1.2.5",
@@ -29,8 +25,7 @@
     "minimatch": "^2.0.7",
     "morgan": "^1.5.2",
     "parse-env": "^0.2.2",
-    "request": "2.53.0",
-    "require-dir": "^0.1.0"
+    "request": "2.53.0"
   },
   "repository": {
     "type": "git",
