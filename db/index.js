@@ -12,9 +12,7 @@ var _ = require("lodash")
 function _v1Schema() {
   return {
     name: "",
-    zip: "",
     mainfile: "",
-    mainfile2: "", // jsdelivr specific
     lastversion: "",
     description: "",
     homepage: "",
