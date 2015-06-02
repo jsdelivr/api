@@ -67,7 +67,3 @@ Get hosted files for a selected version
 http://api.jsdelivr.com/v1/jsdelivr/libraries/jquery/2.0.3
 ```
 
-Get libraries matching to any part of query (defaults to `and`)
-```
-http://api.jsdelivr.com/v1/jsdelivr/libraries?name=jquery&zip=anything*&op=or
-```
