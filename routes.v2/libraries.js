@@ -22,9 +22,7 @@ function _sendResult(err, result, req, res) {
     res.status(error.status).json(error);
   }
   else {
-    // all api.v1 responses are expected to be in the form of an array,
-    // even in the case of a <cdn>/libraries/<libraryName> request (which only ever returns a singular object)
-    res.status(200).json(_.isArray(result) ? result : [result]);
+    res.status(200).json(result);
   }
 }
 
