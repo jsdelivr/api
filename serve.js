@@ -2,6 +2,7 @@
 'use strict';
 
 require('log-timestamp');
+require('babel/register');
 
 var express = require('express')
   , morgan = require('morgan')
