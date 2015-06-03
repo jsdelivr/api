@@ -43,27 +43,33 @@ router.param("cdn", function (req, res, next) {
 });
 
 router.get("/:cdn/libraries", function (req, res) {
-
-  api_v2.processRequest(req.collection, req.query, api_v2.actions.find, function (err, result) {
+  api_v2.processRequest(req.collection, req.query, api_v2.actions.find, false, function (err, result) {
     _sendResult(err, result, req, res);
   });
 });
 
-router.get("/:cdn/libraries/:name", function (req, res) {
+router.get("/:cdn/library", function (req, res) {
+
+  api_v2.processRequest(req.collection, req.query, api_v2.actions.findOne, false, function (err, result) {
+    _sendResult(err, result, req, res);
+  });
+});
+
+router.get("/:cdn/library/:name", function (req, res) {
 
   req.query.name = req.params.name;
 
-  api_v2.processRequest(req.collection, req.query, api_v2.actions.findOne, function (err, result) {
+  api_v2.processRequest(req.collection, req.query, api_v2.actions.findOne, true, function (err, result) {
     _sendResult(err, result, req, res);
   });
 });
 
-router.get("/:cdn/libraries/:name/:version", function (req, res) {
+router.get("/:cdn/library/:name/:version", function (req, res) {
 
   req.query.name = req.params.name;
   req.query.version = req.params.version;
 
-  api_v2.processRequest(req.collection, req.query, api_v2.actions.findOne, function (err, result) {
+  api_v2.processRequest(req.collection, req.query, api_v2.actions.findOne, true, function (err, result) {
     _sendResult(err, result, req, res);
   });
 });
