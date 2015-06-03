@@ -7,7 +7,7 @@ chai.use(require('chai-http'));
 describe('/v2/jsdelivr/', function() {
   var address = 'http://localhost:8001/v2/jsdelivr';
 
-  it ('Resolving /libraries', function(done) {
+  it('Resolving /libraries', function(done) {
     chai.request(address)
     .get('/libraries')
     .then(function(req) {
@@ -16,6 +16,7 @@ describe('/v2/jsdelivr/', function() {
       expect(req).to.be.json;
 
       var body = req.body;
+      expect(body).to.be.instanceof(Array);
       expect(body).to.be.instanceof(Array);
       expect(body[0]).to.have.property('name');
       expect(body[0]).to.have.property('mainfile');
@@ -28,6 +29,21 @@ describe('/v2/jsdelivr/', function() {
       expect(body[0]).to.have.property('assets');
 
       done();
-    }, console.error);
+    });
+  });
+
+  it('Resolving with minimatch', function(done) {
+    chai.request(address)
+    .get('/libraries')
+    .query({name: 'jq*'})
+    .then(function(req) {
+      expect(req).to.have.status(200);
+
+      req.body.forEach(function(lib) {
+        expect(lib.name).to.have.string('jq');
+      });
+
+      done();
+    });
   });
 })
