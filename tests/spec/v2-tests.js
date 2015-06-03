@@ -12,11 +12,9 @@ describe('/v2/jsdelivr/', function() {
     .get('/libraries')
     .then(function(req) {
       expect(req).to.have.status(200);
-      // expect(req).to.have.header('content-type', 'application/json; charset=utf-8')
       expect(req).to.be.json;
 
       var body = req.body;
-      expect(body).to.be.instanceof(Array);
       expect(body).to.be.instanceof(Array);
       expect(body[0]).to.have.property('name');
       expect(body[0]).to.have.property('mainfile');
@@ -29,7 +27,7 @@ describe('/v2/jsdelivr/', function() {
       expect(body[0]).to.have.property('assets');
 
       done();
-    });
+    }, console.error);
   });
 
   it('Resolving with minimatch', function(done) {
@@ -44,6 +42,6 @@ describe('/v2/jsdelivr/', function() {
       });
 
       done();
-    });
+    }, console.error);
   });
 })
