@@ -1,5 +1,6 @@
 require('../setup');
 var chai = require('chai');
+var _ = require('lodash');
 var expect = chai.expect;
 
 chai.use(require('chai-http'));
@@ -26,6 +27,8 @@ describe('/v2/jsdelivr/', function() {
       expect(body[0]).to.have.property('versions');
       expect(body[0]).to.have.property('assets');
 
+      expect(req.body).to.have.length.above(800);
+
       done();
     }, console.error);
   });
@@ -41,7 +44,25 @@ describe('/v2/jsdelivr/', function() {
         expect(lib.name).to.have.string('jq');
       });
 
+      expect(req.body).to.have.length.above(5);
+
       done();
     }, console.error);
   });
-})
+
+  it('Resolving with fuzzyness', function(done) {
+    chai.request(address)
+    .get('/libraries')
+    .query({name: 'jwuery'})
+    .then(function(req) {
+      expect(req).to.have.status(200);
+
+      var result = _.find(req.body, {
+        name: 'jquery'
+      });
+      expect(result).to.not.be.undefined;
+
+      done();
+    }, console.error);
+  });
+});
