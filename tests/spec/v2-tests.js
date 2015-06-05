@@ -73,7 +73,6 @@ describe('/v2/jsdelivr/', function() {
       .query({name: 'jquery', 'author': 'jQuery*'})
       .then(function(req) {
         expect(req).to.have.status(200);
-        console.log(req.body.length);
         expect(req.body).to.have.length(1);
         done();
       }, console.error);
