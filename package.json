@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node serve.js",
-    "test": "babel-node tests/test_run_server.js"
+    "test": "mocha tests/spec --es_staging -A"
   },
   "author": "Juho Vepsalainen",
   "license": "MIT",
@@ -36,5 +36,10 @@
   "homepage": "https://github.com/jsdelivr/api",
   "bugs": {
     "url": "https://github.com/jsdelivr/api/issues"
+  },
+  "devDependencies": {
+    "chai": "^2.3.0",
+    "chai-http": "^1.0.0",
+    "mocha": "^2.2.5"
   }
 }

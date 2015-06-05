@@ -132,6 +132,8 @@ function serve(cb) {
     console.log('Node (version: %s) %s started on %d ...', process.version, process.argv[1], port);
     cb();
   });
+
+  return app;
 }
 
 function init(cb) {
@@ -164,4 +166,3 @@ function terminator(sig) {
 
 function noop() {
 }
-
