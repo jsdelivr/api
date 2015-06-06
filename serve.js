@@ -108,7 +108,7 @@ function runTask(name, cb) {
 }
 
 function serve(cb) {
-  cb = cb || noop;
+  cb = cb || _.noop;
 
   var app = express()
     , port = config.port;
@@ -164,7 +164,3 @@ function terminator(sig) {
 
   console.log('%s: Node server stopped.', Date(Date.now()));
 }
-
-function noop() {
-}
-
