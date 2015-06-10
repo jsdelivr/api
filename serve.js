@@ -9,7 +9,7 @@ var express = require('express')
   , async = require('async')
   , _ = require('lodash')
 
-  , dbs = require("./db")
+  , dbs = require('./db')
   , config = require('./config');
 
 var db = config.db
@@ -29,7 +29,7 @@ function main(cb) {
   ], function (err) {
 
     if (err) {
-      console.log("Error starting application!", err);
+      console.log('Error starting application!', err);
       process.exit();
     }
     else if (cb)
@@ -47,7 +47,7 @@ function runTasks(cb) {
     runTask(name, done);
   }, function (err) {
 
-    if (err) console.error("Error initializing tasks", err);
+    if (err) console.error('Error initializing tasks', err);
 
     //then set the interval
     if (!intervalSet) {
@@ -57,14 +57,13 @@ function runTasks(cb) {
       // we want to space out the start of each sync cycle by 10 minutes each
       setInterval(function () {
         runTasks(function () {
-          console.log("libraries synced!");
+          console.log('libraries synced!');
           return true;
         });
       }, interval);
     }
 
-    if (cb)
-      cb();
+    if (cb) cb();
   });
 }
 
@@ -72,15 +71,15 @@ function runTask(name, cb) {
 
   if(!taskUpdating[name]) {
     taskUpdating[name] = true;
-    console.log("running task...", name);
+    console.log('running task...', name);
 
     try {
-      require("./tasks/" + name + ".js")(dbs, function (err) {
+      require('./tasks/' + name + '.js')(dbs, function (err) {
 
         if (err)
-          console.error("Error in task ", name, err);
+          console.error('Error in task ', name, err);
         else
-          console.log("Task %s complete", name);
+          console.log('Task %s complete', name);
 
         // don't wait for the cache to be cleared
         taskUpdating[name] = false;
@@ -103,7 +102,7 @@ function runTask(name, cb) {
     }
   }
   else {
-    console.log("Task %s is already running", name);
+    console.log('Task %s is already running', name);
     cb();
   }
 }
@@ -125,14 +124,14 @@ function serve(cb) {
   });
 
   // v1 routes
-  app.use("/v1", require("./routes.v1/libraries"));
+  app.use('/v1', require('./routes.v1/libraries'));
 
   // v2 routes
-  app.use("/v2", require("./routes.v2/libraries"));
+  app.use('/v2', require('./routes.v2/libraries'));
 
   // catch all
-  app.all("*", function (req, res) {
-    res.status(404).json({status: 404, message: "Requested url " + req.url + " not found."});
+  app.all('*', function (req, res) {
+    res.status(404).json({status: 404, message: 'Requested url ' + req.url + ' not found.'});
   });
 
   app.listen(port, function () {
@@ -163,10 +162,10 @@ function terminator(sig) {
 
   if (typeof sig === 'string') {
     console.log('%s: Received %s - terminating Node server ...',
-      Date(Date.now()), sig);
+      new Date(), sig);
 
     process.exit(1);
   }
 
-  console.log('%s: Node server stopped.', Date(Date.now()));
+  console.log('%s: Node server stopped.', new Date());
 }

@@ -2,25 +2,25 @@
  * Created by austin on 5/5/15.
  */
 
-"use strict";
+'use strict';
 
-var _ = require("lodash")
+var _ = require('lodash')
   , loki = require('lokijs')
 
   , config = require('../config');
 
 function _v1Schema() {
   return {
-    name: "",
-    mainfile: "",
-    lastversion: "",
-    description: "",
-    homepage: "",
-    github: "",
-    author: "",
+    name: '',
+    mainfile: '',
+    lastversion: '',
+    description: '',
+    homepage: '',
+    github: '',
+    author: '',
     versions: [],
     assets: {}
-  }
+  };
 }
 
 function _etagsSchema() {
