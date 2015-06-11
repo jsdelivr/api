@@ -108,13 +108,20 @@ function runTask(name, cb) {
 }
 
 function serve(cb) {
-  cb = cb || noop;
+  cb = cb || _.noop;
 
   var app = express()
     , port = config.port;
 
   app.use(morgan('dev'));
   app.set('json spaces', 2);
+
+  // setup CORS
+  app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    next();
+  });
 
   // v1 routes
   app.use("/v1", require("./routes.v1/libraries"));
@@ -157,7 +164,3 @@ function terminator(sig) {
 
   console.log('%s: Node server stopped.', Date(Date.now()));
 }
-
-function noop() {
-}
-
