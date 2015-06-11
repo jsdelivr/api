@@ -7,6 +7,7 @@
 var router = new require("express").Router()
   , _ = require("lodash")
 
+  , config = require("../config")
   , dbs = require("../db")
   , api_v2 = require("../lib/api.v2");
 
@@ -29,10 +30,12 @@ router.param("cdn", function (req, res, next) {
 
   // normalize cdn case for collection existense check
   var cdn = String(req.params.cdn).toLowerCase()
-    , collection = dbs[cdn];
+    , collectionConfig = _.find(config.cdnCollections, function (collectionConfig) {
+      return (collectionConfig.name === cdn || _.includes(collectionConfig.aliases, cdn))
+    });
 
-  if (collection) {
-    req.collection = collection;
+  if (collectionConfig) {
+    req.collection = dbs[collectionConfig.name];
     next();
   }
   else {
