@@ -133,10 +133,25 @@ function _syncLibrary(dbs, cdnName, libraryName, cb) {
         _.extend(_item, item);
         collection.update(_item);
       }
-
-      // clean up
-      item = null;
     }
+
+    // quick hack to fix #94
+    if(cdnName === "bootstrap-cdn" && library.name === "twitter-bootstrap") {
+      var item = _.pick(library, schemaKeys);
+      _.defaults(item, dbs._schema);
+      item.name = "bootstrap";
+      var _item = collection.findOne({"name": item.name});
+      if (!_item) {
+        collection.insert(item);
+      }
+      else {
+        _.extend(_item, item);
+        collection.update(_item);
+      }
+    }
+
+    // clean up
+    item = null;
 
     // and return
     cb();
@@ -167,5 +182,14 @@ function _upsertCDNEtags(etagsCollection, cdn, etags) {
     cdnEtags.meta = _cdnCache.meta;
     cdnEtags.$loki = _cdnCache.$loki;
     etagsCollection.update(cdnEtags);
+  }
+}
+
+function _catchBootstrap() {
+  if(cdn === "bootstrap-cdn") {
+    var bootstrapTwitterEtag = _.find(remoteEtags, {path: "bootstrap-twitter"});
+    if(bootstrapTwitterEtag) {
+      bootstrapTwitterEtag.path
+    }
   }
 }
