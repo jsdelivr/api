@@ -23,13 +23,24 @@ function _v1Schema() {
   }
 }
 
+function _etagsSchema() {
+  return {
+    cdn: ""
+  }
+}
+
 var dbs = {
   _db: new loki(config.db),
-  _schema: _v1Schema()
+  _schema: _v1Schema(),
+  _etagsSchema: _etagsSchema()
 };
 
-_.each(config.cdns, function(cdn) {
-  dbs[cdn] = dbs._db.addCollection(cdn, { indices: ['name']});
+// add a collection for each cdn
+_.each(config.cdnCollections, function (collection) {
+  dbs[collection.name] = dbs._db.addCollection(collection.name, {indices: ['name']});
 });
+
+// add an etags collection
+dbs[config.etagsCollection] = dbs._db.addCollection(config.etagsCollection, {indices: ['cdn']});
 
 module.exports = dbs;
