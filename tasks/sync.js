@@ -114,8 +114,6 @@ function _syncLibrary(dbs, cdnName, libraryName, cb) {
       return cb(new Error("Request to sync " + libraryName + " from " + _url + " failed"));
     }
 
-    console.log('Files for sync of %s retrieved from source %s', libraryName, _url);
-
     var schemaKeys = Object.keys(dbs._schema);
     var collection = dbs[cdnName];
 
