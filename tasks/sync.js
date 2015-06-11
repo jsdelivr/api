@@ -83,6 +83,7 @@ function _syncCDN(dbs, cdn, cb) {
       // update the etag collection if nothing drastic has happened
       if (!err) {
         _upsertCDNEtags(etagsCollection, cdn, etags);
+        console.log("Successfully synced libraries for " + cdn);
       }
       cb(err);
     });
