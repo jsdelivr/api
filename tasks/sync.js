@@ -17,7 +17,7 @@ module.exports = function (dbs, cb) {
       // note the error but don't exit out of the loop,
       // it's okay to serve stale content if something goes wrong during the sync
       if (err) {
-        console.log("Error syncing CDN %s", cdn, err);
+        console.log('Error syncing CDN %s', cdn, err);
       }
       next();
     });
@@ -36,8 +36,8 @@ function _syncCDN(dbs, cdn, cb) {
 
   //attempt to get etags collection for this cdn
   var etagsCollection = dbs[config.etagsCollection]
-    , cdnCache = etagsCollection.findOne({"cdn": cdn})
-    , etags = cdnCache ? _.indexBy(cdnCache.etags || [], "path") : {};
+    , cdnCache = etagsCollection.findOne({'cdn': cdn})
+    , etags = cdnCache ? _.indexBy(cdnCache.etags || [], 'path') : {};
 
   // get the remote cache file
   var _url = url.resolve(config.syncUrl, cdn + '.json');
@@ -48,10 +48,10 @@ function _syncCDN(dbs, cdn, cb) {
   }, function (err, res, remoteEtags) {
 
     if (err || !res) {
-      return cb(err || new Error("Request to sync " + cdn + " from " + _url + " failed"));
+      return cb(err || new Error(`Request to sync ${cdn} from ${cdn} failed`));
     }
     else if (res.statusCode !== 200) {
-      return cb(new Error("Request to sync " + cdn + " from " + _url + " failed"));
+      return cb(new Error(`Request to sync ${cdn} from ${cdn} failed`));
     }
 
     console.log('Files for sync of %s retrieved from source %s', cdn, _url);
@@ -65,7 +65,7 @@ function _syncCDN(dbs, cdn, cb) {
           // all an error means is the api will serve stale content for a library
           // that may be mucked up on the api-sync side
           if (err) {
-            console.error("Error syncing library!", err);
+            console.error('Error syncing library!', err);
           }
           // update the running etag cache
           else {
@@ -83,7 +83,7 @@ function _syncCDN(dbs, cdn, cb) {
       // update the etag collection if nothing drastic has happened
       if (!err) {
         _upsertCDNEtags(etagsCollection, cdn, etags);
-        console.log("Successfully synced libraries for " + cdn);
+        console.log(`Successfully synced libraries for ${cdn}`);
       }
       cb(err);
     });
@@ -109,10 +109,10 @@ function _syncLibrary(dbs, cdnName, libraryName, cb) {
   }, function (err, res, library) {
 
     if (err || !res) {
-      return cb(err || new Error("Request to sync " + libraryName + " from " + _url + " failed"));
+      return cb(err || new Error(`Request to sync ${libraryName} from ${cdnName} failed`));
     }
     else if (res.statusCode !== 200) {
-      return cb(new Error("Request to sync " + libraryName + " from " + _url + " failed"));
+      return cb(new Error(`Request to sync ${libraryName} from ${cdnName} failed`));
     }
 
     var schemaKeys = Object.keys(dbs._schema);
@@ -125,7 +125,7 @@ function _syncLibrary(dbs, cdnName, libraryName, cb) {
     // only insert if the item does not currently exist
     var name = library.name || null;
     if (name) {
-      var _item = collection.findOne({"name": name});
+      var _item = collection.findOne({'name': name});
       if (!_item) {
         collection.insert(item);
       }
@@ -153,7 +153,7 @@ function _syncLibrary(dbs, cdnName, libraryName, cb) {
  */
 function _upsertCDNEtags(etagsCollection, cdn, etags) {
 
-  var _cdnCache = etagsCollection.findOne({"cdn": cdn})
+  var _cdnCache = etagsCollection.findOne({'cdn': cdn})
     , cdnEtags = {cdn: cdn};
 
   cdnEtags.etags = _.map(etags, function (etag) {

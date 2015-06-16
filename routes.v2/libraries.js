@@ -2,14 +2,14 @@
  * Created by austin on 5/20/15.
  */
 
-"use strict";
+'use strict';
 
-var router = new require("express").Router()
-  , _ = require("lodash")
+var router = new require('express').Router()
+  , _ = require('lodash')
 
-  , config = require("../config")
-  , dbs = require("../db")
-  , api_v2 = require("../lib/api.v2");
+  , config = require('../config')
+  , dbs = require('../db')
+  , api_v2 = require('../lib/api.v2');
 
 function _sendResult(err, result, req, res) {
 
@@ -26,7 +26,7 @@ function _sendResult(err, result, req, res) {
   }
 }
 
-router.param("cdn", function (req, res, next) {
+router.param('cdn', function (req, res, next) {
 
   // normalize cdn case for collection existense check
   var cdn = String(req.params.cdn).toLowerCase()
@@ -39,26 +39,26 @@ router.param("cdn", function (req, res, next) {
     next();
   }
   else {
-    var error = new Error("Invalid CDN requested: " + cdn);
+    var error = new Error('Invalid CDN requested: ' + cdn);
     error.code = 400;
     _sendResult(error, {}, req, res);
   }
 });
 
-router.get("/:cdn/libraries", function (req, res) {
+router.get('/:cdn/libraries', function (req, res) {
   api_v2.processRequest(req.collection, req.query, api_v2.actions.find, false, function (err, result) {
     _sendResult(err, result, req, res);
   });
 });
 
-router.get("/:cdn/library", function (req, res) {
+router.get('/:cdn/library', function (req, res) {
 
   api_v2.processRequest(req.collection, req.query, api_v2.actions.findOne, false, function (err, result) {
     _sendResult(err, result, req, res);
   });
 });
 
-router.get("/:cdn/library/:name", function (req, res) {
+router.get('/:cdn/library/:name', function (req, res) {
 
   req.query.name = req.params.name;
 
@@ -67,7 +67,7 @@ router.get("/:cdn/library/:name", function (req, res) {
   });
 });
 
-router.get("/:cdn/library/:name/:version", function (req, res) {
+router.get('/:cdn/library/:name/:version', function (req, res) {
 
   req.query.name = req.params.name;
   req.query.version = req.params.version;
