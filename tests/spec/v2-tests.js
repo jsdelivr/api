@@ -26,7 +26,7 @@ describe('/v2/jsdelivr/', function() {
         expect(body[0]).to.have.property('github');
         expect(body[0]).to.have.property('author');
         expect(body[0]).to.have.property('versions');
-        expect(body[0]).to.have.property('assets');
+        expect(body[0]).to.not.have.property('assets');
 
         expect(req.body).to.have.length.above(800);
 
