@@ -1,4 +1,3 @@
-require('../setup');
 var chai = require('chai');
 var _ = require('lodash');
 var expect = chai.expect;

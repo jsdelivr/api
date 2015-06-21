@@ -10,7 +10,8 @@
   },
   "scripts": {
     "start": "node serve.js",
-    "test": "mocha tests/spec --es_staging -A"
+    "test": "mocha tests/setup.js --es_staging -A --delay",
+    "watch": "mocha --require tests/setup.js --es_staging -A --delay --autotest --watch ./**/*.js"
   },
   "author": "Juho Vepsalainen",
   "license": "MIT",
