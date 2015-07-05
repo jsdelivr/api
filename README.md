@@ -13,10 +13,21 @@ Currently supporting the following CDN's:
 
 *For v1 API docs, please see the [v1 README](v1README.md).*
 
+## Index
+
+- [Usage][usage-url]
+- [Resources Served by the API][resources-url]
+  - [library][resources-library-url]
+  - [error][resources-error-url]
+- [API Endpoints][endpoints-url]
+- [Optinal Query Parameters][parameters-query-url]
+  - [Query Scoping Parameters][parameters-scoping-url]
+  - [Response Modifier Parameters][parameters-modifier-url]
+
 ## Usage
 
-All [resources](#response-resource-objects) are exposed at `api.jsdelivr.com/v2`
-at the appropriate [endpoints](#endpoints).
+All [resources][resources-url] are exposed at `api.jsdelivr.com/v2`
+at the appropriate [endpoints][endpoints-url].
 
 ## Response Resource Objects
 
@@ -118,7 +129,9 @@ and `<version>` is some version of `<library>`.
 
 ## Optional Query Parameters
 
-### Scopting Parameters
+> Providing multiple parameters in a single search will cause all parameters to be applied, and the resulting set returned.
+
+### Scoping Parameters
 
 The following parameters may be used to scope an API query response.
 
@@ -165,4 +178,11 @@ The following parameters can be provided to alter the response format of your qu
   // => this will return only the `name` and `mainfile` fields for all libraries hosted by JsDelivr
   ```
 
-> Providing multiple parameters in a single search will cause all parameters to be applied, and the resulting set returned.
+[usage-url]: #usage
+[resources-url]: #response-resource-objects
+[resources-library-url]: #library
+[resources-error-url]: #error
+[endpoints-url]: #endpoints
+[parameters-query-url]: #optional-query-parameters
+[parameters-scoping-url]: #scoping-parameters
+[parameters-modifier-url]: #modifier-parameters
