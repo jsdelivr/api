@@ -13,11 +13,16 @@ Currently supporting the following CDN's:
 
 *For v1 API docs, please see the [v1 README](v1README.md).*
 
-## Response Format
+## Usage
+
+All [resources](#response-resource-objects) are exposed at `api.jsdelivr.com/v2`
+at the appropriate [endpoints](#endpoints).
+
+## Response Resource Objects
 
 All responses are given in JSON format.
 
-### `library`
+#### `library`
 
 Queries to either the `.../libraries` or `.../library/<library>` endpoints are formatted as follows.
 
@@ -62,7 +67,7 @@ api.jsdelivr.com/v2/jsdelivr/library/jquery
 }
 ```
 
-### `error`
+#### `error`
 
 Should you ever be so unlucky, an error response is as follows
 
@@ -159,5 +164,5 @@ The following parameters can be provided to alter the response format of your qu
 
   // => this will return only the `name` and `mainfile` fields for all libraries hosted by JsDelivr
   ```
-  
+
 > Providing multiple parameters in a single search will cause all parameters to be applied, and the resulting set returned.
