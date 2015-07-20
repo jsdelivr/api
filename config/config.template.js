@@ -23,5 +23,11 @@ module.exports = {
     secret: 'replace this',
     zoneId: 0 // replace with some zone id
   },
-  github: '' // replace with github token
+  github: '', // replace with github token
+  sql: {
+    host: '', // replace with api sql api instance host
+    user: 'jsdelivr-api',
+    password: '',
+    database: 'reporting'
+  }
 };

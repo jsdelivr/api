@@ -113,6 +113,9 @@ function serve(cb) {
   var app = express()
     , port = config.port;
 
+  // set global sql client
+  var KNEX = global.KNEX = require("./db/knex");
+
   app.use(morgan('dev'));
   app.set('json spaces', 2);
 
@@ -127,6 +130,7 @@ function serve(cb) {
   app.use('/v1', require('./routes.v1/libraries'));
 
   // v2 routes
+  app.use('/v2/analytics', require('./routes.v2/analytics'));
   app.use('/v2', require('./routes.v2/libraries'));
 
   // catch all
