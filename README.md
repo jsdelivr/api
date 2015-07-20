@@ -126,6 +126,9 @@ and `<version>` is some version of `<library>`.
   optionally provide query parameters to return specific response fields.
 - `/<cdn>/library/<library>/<version>/files`
   - Get low level information about the files w/i `<version>` of `<library>`
+- `/analytics/<library>`
+  - Returns CDN hit metrics for the named library in the formate `{<date>: <hitsTotal>}`.
+  - Optionally specify `from_date` (default '30 days ago') and/or `to_date` (default 'today') in your query.
 
 ## Optional Query Parameters
 
