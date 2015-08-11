@@ -9,7 +9,7 @@
     "npm": "^2.2.0"
   },
   "scripts": {
-    "start": "node serve.js",
+    "start": "forever serve.js",
     "test": "mocha tests/setup.js --es_staging -A --delay",
     "watch": "mocha --require tests/setup.js --es_staging -A --delay --autotest --watch ./**/*.js"
   },
@@ -21,6 +21,7 @@
     "babel": "^5.4.7",
     "express": "^4.12.3",
     "knex": "^0.8.6",
+    "forever": "^0.15.1",
     "lodash": "^3.5.0",
     "log-timestamp": "^0.1.1",
     "lokijs": "^1.2.5",
