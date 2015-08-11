@@ -1,6 +1,15 @@
 
 > Contributors Welcome!
 
+## Environment Variables
+
+The following environment variables **must** be specified for a production API instance:
+
+- `GITHUB=<github token>`
+
+- `SQL_HOST=<api sql instance host>`
+- `SQL_PASSWORD=<api sql instance password>`
+
 ## Local Development
 
 The jsdelivr api takes a dependency on [api-sync](https://github.com/jsdelivr/api-sync) to maintain a current data set,
