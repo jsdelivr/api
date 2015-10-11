@@ -5,6 +5,7 @@ var async = require('async')
   , url = require('url')
   , _ = require('lodash')
   , request = require('request')
+  , semver = require("semver")
 
   , config = require('../config');
 
@@ -121,6 +122,15 @@ function _syncLibrary(dbs, cdnName, libraryName, cb) {
     // create the db item by selecting desired values from synced data and filling in absent data w/ defaults
     var item = _.pick(library, schemaKeys);
     _.defaults(item, dbs._schema);
+
+    // semver sort the item versions
+    if (item.versions && item.versions.length) {
+      item.versions = _.filter(item.versions, function (version) {
+        return semver.valid(version);
+      });
+      item.versions = item.versions.sort(semver.rcompare);
+      item.lastversion = item.versions[0]
+    }
 
     // only insert if the item does not currently exist
     var name = library.name || null;
