@@ -1,5 +1,5 @@
 module.exports = {
-  port: 8001,
+  port: 8089,
   //cdns: ['bootstrap', 'cdnjs', 'google', 'jsdelivr', 'jquery'],
   cdns: ['bootstrap-cdn', 'jsdelivr', 'cdnjs', 'google'],
   //cdns: ['bootstrap-cdn', 'jsdelivr', 'cdnjs'],
