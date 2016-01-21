@@ -1,12 +1,13 @@
 module.exports = {
   port: 8089,
-  cdns: ['bootstrap-cdn', 'cdnjs', 'google', 'jsdelivr'],
+  cdns: ['bootstrap-cdn', 'cdnjs', 'google', 'jsdelivr', 'jquery'],
   db: 'db',
   cdnCollections: [
     {name: 'bootstrap-cdn', aliases: ['bootstrap']},
     {name: 'cdnjs', aliases: ['cdnjs']},
     {name: 'google', aliases: ['google']},
-    {name: 'jsdelivr', aliases: ['jsdelivr']}
+    {name: 'jsdelivr', aliases: ['jsdelivr']},
+    {name: 'jquery', aliases: ['jquery']}
   ],
   etagsCollection: 'etagsCollection',
   //syncUrl: 'http://localhost:8000/data/',
