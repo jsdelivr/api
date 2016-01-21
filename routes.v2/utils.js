@@ -12,7 +12,7 @@ module.exports.sendResult = function (err, result, req, res) {
       message: err.message || err,
       url: req.url
     };
-    res.status(error.status).json(error);
+    res.status(error.status).jsonp(error);
   }
   else {
     // attach any header values contained in the result
@@ -21,6 +21,6 @@ module.exports.sendResult = function (err, result, req, res) {
       delete  result._headers;
     }
 
-    res.status(200).json(result);
+    res.status(200).jsonp(result);
   }
 };

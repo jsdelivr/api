@@ -134,7 +134,7 @@ function serve(cb) {
 
   // catch all
   app.all('*', function (req, res) {
-    res.status(404).json({status: 404, message: 'Requested url ' + req.url + ' not found.'});
+    res.status(404).jsonp({status: 404, message: 'Requested url ' + req.url + ' not found.'});
   });
 
   app.listen(port, function () {

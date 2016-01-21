@@ -58,6 +58,14 @@ router.get('/:cdn/libraries', function (req, res) {
   });
 });
 
+router.get('/:cdn/libraries/:name', function (req, res) {
+  req.query.name = req.params.name;
+
+  api_v2.processRequest(req.collection, req.query, api_v2.actions.find, false, function (err, result) {
+    utils.sendResult(err, result, req, res);
+  });
+});
+
 router.get('/:cdn/library', [_eTagCheck], function (req, res) {
 
   api_v2.processRequest(req.collection, req.query, api_v2.actions.findOne, false, function (err, result) {

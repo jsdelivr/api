@@ -109,7 +109,7 @@ function _syncLibrary(dbs, cdnName, libraryName, cb) {
     json: true
   }, function (err, res, library) {
 
-    if (err || !res) {
+    if (err || !res || !library) {
       return cb(err || new Error(`Request to sync ${libraryName} from ${cdnName} failed`));
     }
     else if (res.statusCode !== 200) {
