@@ -9,6 +9,21 @@ var _ = require('lodash')
 
   , config = require('../config');
 
+function _schema() {
+  return {
+    name: '',
+    mainfile: '',
+    lastversion: '',
+    description: '',
+    homepage: '',
+    github: '',
+    author: '',
+    versions: [],
+    assets: {},
+    repositories: []
+  };
+}
+
 function _v1Schema() {
   return {
     name: '',
@@ -23,6 +38,21 @@ function _v1Schema() {
   };
 }
 
+function _v2Schema() {
+  return {
+    name: '',
+    mainfile: '',
+    lastversion: '',
+    description: '',
+    homepage: '',
+    github: '',
+    author: '',
+    versions: [],
+    assets: {},
+    repositories: []
+  };
+}
+
 function _etagsSchema() {
   return {
     cdn: ""
@@ -31,7 +61,9 @@ function _etagsSchema() {
 
 var dbs = {
   _db: new loki(config.db),
-  _schema: _v1Schema(),
+  _schema: _schema(),
+  _v1Schema: _v1Schema(),
+  _v2Schema: _v2Schema(),
   _etagsSchema: _etagsSchema()
 };
 
