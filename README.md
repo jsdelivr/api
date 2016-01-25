@@ -1,10 +1,10 @@
 
 # Public CDNs API
 
-The JSDelivr API provides a queryable interface for accessing information about the libraries hosted by major CDN's,
-the API is free to use and imposes no rate limit on the end user.
+The jsDelivr API provides an interface for accessing information about the libraries hosted by major CDN's,
+it's free to use and imposes no rate limits.
 
-Currently supporting the following CDN's:
+Currently supports the following CDN's:
 
 - `jsdelivr`
 - `cdnjs`
@@ -21,9 +21,6 @@ Currently supporting the following CDN's:
   - [library][resources-library-url]
   - [error][resources-error-url]
 - [API Endpoints][endpoints-url]
-- [Optinal Query Parameters][parameters-query-url]
-  - [Query Scoping Parameters][parameters-scoping-url]
-  - [Response Modifier Parameters][parameters-modifier-url]
 
 ## Usage
 
@@ -32,22 +29,23 @@ at the appropriate [endpoints][endpoints-url].
 
 ## Response Resource Objects
 
-All responses are given in JSON format.
+All responses are in JSON or JSONP (if `callback` parameter is provided).
 
 #### `library`
 
-Queries to either the `.../libraries` or `.../library/<library>` endpoints are formatted as follows.
+Queries to `/v2/<cdn>/libraries` are formatted as follows.
 
 ```
 {
   "name": <libraryName>,
-  "mainfile": <libraryMainFile>,
+  "mainfile": <libraryMainFile | "">,
   "lastversion": <currentLibraryVersion>,
   "description": <libraryDescription | "">
   "homepage": <libraryHomepageURL | "">,
   "github": <libraryGihubURL | "">,
   "author": <libraryAuthor | "">,
   "versions": <arrayOfLibraryVersions>,
+  "repositories": <arrayOfLibraryRepositories>,
   "meta": {
     "created": <apiLibraryCreationTime>,
     "updated": <apiLibraryUpdatedTime | undefined>
@@ -55,7 +53,20 @@ Queries to either the `.../libraries` or `.../library/<library>` endpoints are f
 }
 ```
 
-e.g.
+Queries to `/v2/<cdn>/library` additionally include `assets` field.
+
+```
+"assets": [
+  {
+    "<version>": {
+      "files": <arrayOfFiles>,
+      "mainfile": <libraryMainFileForThisVersion | "">
+    }
+  },
+]
+```
+
+**Example**
 ```
 api.jsdelivr.com/v2/jsdelivr/library/jquery
 
@@ -73,6 +84,23 @@ api.jsdelivr.com/v2/jsdelivr/library/jquery
     "2.1.3",
     ...
   ],
+  "assets": [
+    {
+      "1.0.1": {
+        "files": [
+          "jquery-1.0.1.pack.js",
+          "jquery-1.0.1.js"
+        ]
+      }
+    },
+    ...
+  ],
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/jquery/jquery"
+    }
+  ],
   "meta": {
     "created": 1436126637972,
   }
@@ -81,7 +109,7 @@ api.jsdelivr.com/v2/jsdelivr/library/jquery
 
 #### `error`
 
-Should you ever be so unlucky, an error response is as follows
+Should you ever be so unlucky, an error response is as follows.
 
 ```
 {
@@ -90,7 +118,7 @@ Should you ever be so unlucky, an error response is as follows
 }
 ```
 
-e.g.
+**Example**
 
 ```
 api.jsdelivr.com/v2/foo
@@ -104,89 +132,50 @@ api.jsdelivr.com/v2/foo
 
 ## Endpoints
 
-Where `<cdn> == jsdelivr | cdnjs | google | bootstrap`,
-`<library>` is a library provided by `<cdn>`
-and `<version>` is some version of `<library>`.
-
 - `/<cdn>/libraries`
-  - Returns an array of library objects for all libraries hosted by <cdn>;
-  optionally provide query arguments to narrow the scope of your search or to return only specific object fields in the response.
-
-  e.g.
-
+  - Returns an array of library objects for all libraries hosted by `<cdn>`; you can provide query arguments to narrow the scope of your search, or to return only specific object fields in the response.
+  
+  **Example**
   ```
   api.jsdelivr.com/v2/jsdelivr/libraries
-
-  // specify a named library
-
-  api.jsdelivr.com/v2/jsdelivr/libraries?name=<library>
+  // => returns a list of all libraries hosted by the CDN
   ```
 
-- `/<cdn>/library/<library>`
-  - Returns a library object for a specific library contained in the CDN;
-  optionally provide query parameters to return specific response fields.
-- `/<cdn>/library/<library>/<version>/files`
-  - Get low level information about the files w/i `<version>` of `<library>`
-- `/analytics/<library>`
-  - Returns CDN hit metrics for the named library in the formate `{<date>: <hitsTotal>}`.
-  - Optionally specify `from_date` (default '30 days ago') and/or `to_date` (default 'today') in your query.
-
-## Optional Query Parameters
-
-> Providing multiple parameters in a single search will cause all parameters to be applied, and the resulting set returned.
-
-### Scoping Parameters
-
-The following parameters may be used to scope an API query response.
-
-- `name` - name of the library.
-  -  Fuzzy string matching on the library name is supported e.g.
+  **Optional Query Parameters**
 
   ```
   api.jsdelivr.com/v2/jsdelivr/libraries?name=jquery
-
-  // => returns both jquery and jquerypp
-  ```
-- `mainfile` - mainfile parameter in info.ini.
-  - Query string is evaluated on a strictly equal basis e.g.
-
-  ```
+  api.jsdelivr.com/v2/jsdelivr/libraries/jquery (alias)
+  // => fuzzy string matching on the library name; returns jquery and jquerypp
+  
+  api.jsdelivr.com/v2/jsdelivr/libraries?name=jquery*
+  // => while fuzzy matching only matches names that are very similar,
+  // "*" means any number of any characters, so this will return all projects with names starting with jquery
+  
+  api.jsdelivr.com/v2/jsdelivr/libraries?name=jquery,bootstrap
+  // => you can also use a comma to match several projects at once;
+  // note that fuzzy matching is disabled in this case, but you can still use "*"
+  
   api.jsdelivr.com/v2/jsdelivr/libraries?mainfile=jquery.min.js
-  ```
-- `lastversion`- lastversion of the project.
-  - e.g.
-
-  ```
+  // => all libraries with mainfile named jquery.min.js
+  
   api.jsdelivr.com/v2/jsdelivr/libraries?lastversion=2.0.3
+  // => all libraries with lastversion equal to 2.0.3
 
-  // => matches multiple projects
-  ```
-- `author` - the author of project. Example: jQuery Foundation
-  - e.g.
-
-  ```
   api.jsdelivr.com/v2/jsdelivr/libraries?author=jQuery%20Foundation
-  ```
-
-### Modifier Parameters
-
-The following parameters can be provided to alter the response format of your query.
-
-- `fields` - a comma delimited list of fields to return in the response,
-  this will automatically exclude any fields *not* specified by `fields`.
-  - e.g.
-
-  ```
+  // => all libraries by the specified author
+  
   api.jsdelivr.com/v2/jsdelivr/libraries?fields=name,mainfile
-
-  // => this will return only the `name` and `mainfile` fields for all libraries hosted by JsDelivr
+  // => only include the specified fields in the response
   ```
+
+- `/<cdn>/library/<library>`
+  - Returns a library object for a specific library contained in the CDN; supports the same query parameters as `/<cdn>/libraries/`
+- `/<cdn>/library/<library>/<version>`
+  - Returns a list of files for the specified `<version>` of `<library>`
 
 [usage-url]: #usage
 [resources-url]: #response-resource-objects
 [resources-library-url]: #library
 [resources-error-url]: #error
 [endpoints-url]: #endpoints
-[parameters-query-url]: #optional-query-parameters
-[parameters-scoping-url]: #scoping-parameters
-[parameters-modifier-url]: #modifier-parameters
