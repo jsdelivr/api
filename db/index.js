@@ -34,7 +34,8 @@ function _v1Schema() {
     github: '',
     author: '',
     versions: [],
-    assets: {}
+    assets: {},
+    meta: {}
   };
 }
 
@@ -49,7 +50,8 @@ function _v2Schema() {
     author: '',
     versions: [],
     assets: {},
-    repositories: []
+    repositories: [],
+    meta: {}
   };
 }
 
