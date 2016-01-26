@@ -1,7 +1,7 @@
 var chai = require('chai');
 var _ = require('lodash');
 var expect = chai.expect;
-var timeout = 10000;
+var timeout = 30000;
 
 chai.use(require('chai-http'));
 
