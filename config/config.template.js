@@ -22,6 +22,7 @@ module.exports = {
     zoneId: 0 // replace with some zone id
   },
   github: '', // replace with github token
+  logentriesToken: 'aaaaaaaa-1111-1111-1111-aaaaaaaaaaaa', // replace with logentries token
   sql: {
     host: '', // replace with api sql api instance host
     user: 'jsdelivr-api',
