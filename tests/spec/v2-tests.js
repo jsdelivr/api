@@ -194,6 +194,42 @@ describe('/v2/jsdelivr/', function() {
 				.catch(done);
 		});
 
+		it('Search by homepage', function (done) {
+			chai.request(address)
+				.get('/libraries')
+				.query({ homepage: 'http://jquery.com/' })
+				.then(function (req) {
+					expect(req).to.have.status(200);
+
+					req.body.forEach(function(lib) {
+						expect(lib.homepage).to.equal('http://jquery.com/');
+					});
+
+					expect(req.body).to.have.length(1);
+
+					done();
+				})
+				.catch(done);
+		});
+
+		it('Search by GitHub', function (done) {
+			chai.request(address)
+				.get('/libraries')
+				.query({ github: 'https://github.com/jquery/jquery' })
+				.then(function (req) {
+					expect(req).to.have.status(200);
+
+					req.body.forEach(function(lib) {
+						expect(lib.github).to.equal('https://github.com/jquery/jquery');
+					});
+
+					expect(req.body).to.have.length(1);
+
+					done();
+				})
+				.catch(done);
+		});
+
 		it('Select specific fields', function (done) {
 			chai.request(address)
 				.get('/libraries')

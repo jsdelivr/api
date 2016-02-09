@@ -165,6 +165,12 @@ api.jsdelivr.com/v2/foo
   api.jsdelivr.com/v2/jsdelivr/libraries?author=jQuery%20Foundation
   // => all libraries by the specified author
   
+  api.jsdelivr.com/v2/jsdelivr/libraries?homepage=http://jquery.com/
+  // => all libraries with homepage equal to http://jquery.com/
+
+  api.jsdelivr.com/v2/jsdelivr/libraries?github=https://github.com/jquery/jquery
+  // => all libraries with github equal to https://github.com/jquery/jquery
+  
   api.jsdelivr.com/v2/jsdelivr/libraries?fields=name,mainfile
   // => only include the specified fields in the response
   ```
