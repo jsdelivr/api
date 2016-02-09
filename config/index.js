@@ -1,13 +1,9 @@
-'use strict';
-
-var parseEnv = require('parse-env');
-
-var configTemplate = require('./config.template');
-var config;
+import parseEnv from 'parse-env';
+import configTemplate from './config.template';
+let config;
 
 try {
-    config = require('./config');
-}
-catch(e) {}
+	config = require('./config');
+} catch (e) {}
 
-module.exports = parseEnv(process.env, configTemplate, config);
+export default parseEnv(process.env, configTemplate, config);
