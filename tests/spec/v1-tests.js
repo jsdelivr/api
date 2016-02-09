@@ -1,12 +1,11 @@
 var chai = require('chai');
-var _ = require('lodash');
 var expect = chai.expect;
 var timeout = 30000;
 
 chai.use(require('chai-http'));
 
-describe('/v2/jsdelivr/', function() {
-	var address = 'http://localhost:8090/v2/jsdelivr';
+describe('/v1/jsdelivr/', function() {
+	var address = 'http://localhost:8090/v1/jsdelivr';
 
 	this.timeout(timeout);
 
@@ -28,43 +27,10 @@ describe('/v2/jsdelivr/', function() {
 					expect(body[0]).to.have.property('github');
 					expect(body[0]).to.have.property('author');
 					expect(body[0]).to.have.property('versions');
-					expect(body[0]).to.have.property('repositories');
 					expect(body[0]).to.have.property('meta');
-					expect(body[0]).to.not.have.property('assets');
+					expect(body[0]).to.have.property('assets');
 
 					expect(req.body).to.have.length.above(800);
-
-					done();
-				})
-				.catch(done);
-		});
-
-		it('Fuzzy search', function (done) {
-			chai.request(address)
-				.get('/libraries')
-				.query({ name: 'jquery' })
-				.then(function (req) {
-					expect(req).to.have.status(200);
-
-					expect(req.body[0].name).to.equal('jquery');
-					expect(req.body).to.have.length.above(1);
-
-					done();
-				})
-				.catch(done);
-		});
-
-		it('Fuzzy search #2', function (done) {
-			chai.request(address)
-				.get('/libraries')
-				.query({ name: 'jwuery' })
-				.then(function (req) {
-					expect(req).to.have.status(200);
-
-					var result = _.find(req.body, {
-						name: 'jquery'
-					});
-					expect(result).to.not.be.undefined;
 
 					done();
 				})
@@ -96,53 +62,27 @@ describe('/v2/jsdelivr/', function() {
 					expect(req).to.have.status(200);
 
 					expect(req.body[0].name).to.equal('jquery');
-					expect(req.body).to.have.length.above(1);
 
 					done();
 				})
 			   .catch(done);
 		});
 
-		it('Multiple libraries', function (done) {
+		it('/libraries/<library>/<version>', function (done) {
 			chai.request(address)
-				.get('/libraries')
-				.query({ name: 'jquery,bootstrap' })
+				.get('/libraries/jquery/2.2.0')
 				.then(function (req) {
 					expect(req).to.have.status(200);
 
-					var result = _.find(req.body, {
-						name: 'jquery'
-					});
-					expect(result).to.not.be.undefined;
-
-					result = _.find(req.body, {
-						name: 'bootstrap'
-					});
-					expect(result).to.not.be.undefined;
-
-					expect(req.body).to.have.length(2);
+					expect(req.body).to.be.instanceof(Array);
+					expect(req.body).to.be.have.length(3);
+					expect(req.body).to.include('jquery.js');
+					expect(req.body).to.include('jquery.min.js');
+					expect(req.body).to.include('jquery.min.map');
 
 					done();
 				})
-				.catch(done);
-		});
-
-		it('Multiple libraries with minimatch', function (done) {
-			chai.request(address)
-				.get('/libraries')
-				.query({ name: 'jquery,bootstrap*' })
-				.then(function (req) {
-					expect(req).to.have.status(200);
-
-					req.body.forEach(function(lib) {
-						expect(lib.name).to.match(/^(?:jquery|bootstrap.*)$/i);
-					});
-
-					expect(req.body).to.have.length.above(2);
-
-					done();
-				})
-				.catch(done);
+			   .catch(done);
 		});
 
 		it('Search by mainfile', function (done) {
@@ -238,57 +178,11 @@ describe('/v2/jsdelivr/', function() {
 				})
 				.catch(done);
 		});
-
-		it('/library', function (done) {
-			chai.request(address)
-				.get('/library')
-				.query({ name: 'jquery' })
-				.then(function (req) {
-					expect(req).to.have.status(200);
-
-					expect(req.body.name).to.equal('jquery');
-					expect(req.body.assets).to.be.instanceof(Object);
-
-					done();
-				})
-				.catch(done);
-		});
-
-		it('/library<library> alias', function (done) {
-			chai.request(address)
-				.get('/library/jquery')
-				.then(function (req) {
-					expect(req).to.have.status(200);
-
-					expect(req.body.name).to.equal('jquery');
-					expect(req.body.assets).to.be.instanceof(Object);
-
-					done();
-				})
-				.catch(done);
-		});
-
-		it('/library/<library>/version', function (done) {
-			chai.request(address)
-				.get('/library/jquery/2.2.0')
-				.then(function (req) {
-					expect(req).to.have.status(200);
-
-					expect(req.body).to.be.instanceof(Array);
-					expect(req.body).to.be.have.length(3);
-					expect(req.body).to.include('jquery.js');
-					expect(req.body).to.include('jquery.min.js');
-					expect(req.body).to.include('jquery.min.map');
-
-					done();
-				})
-			   .catch(done);
-		});
 	});
 });
 
-describe('/v2/cdnjs/', function() {
-	var address = 'http://localhost:8090/v2/cdnjs';
+describe('/v1/cdnjs/', function() {
+	var address = 'http://localhost:8090/v1/cdnjs';
 
 	this.timeout(timeout);
 
@@ -311,9 +205,8 @@ describe('/v2/cdnjs/', function() {
 					expect(body[0]).to.have.property('github');
 					expect(body[0]).to.have.property('author');
 					expect(body[0]).to.have.property('versions');
-					expect(body[0]).to.have.property('repositories');
 					expect(body[0]).to.have.property('meta');
-					expect(body[0]).to.not.have.property('assets');
+					expect(body[0]).to.have.property('assets');
 
 					expect(req.body).to.have.length.above(10);
 
@@ -324,8 +217,8 @@ describe('/v2/cdnjs/', function() {
 	});
 });
 
-describe('/v2/google/', function() {
-	var address = 'http://localhost:8090/v2/google';
+describe('/v1/google/', function() {
+	var address = 'http://localhost:8090/v1/google';
 
 	this.timeout(timeout);
 
@@ -347,9 +240,8 @@ describe('/v2/google/', function() {
 					expect(body[0]).to.have.property('github');
 					expect(body[0]).to.have.property('author');
 					expect(body[0]).to.have.property('versions');
-					expect(body[0]).to.have.property('repositories');
 					expect(body[0]).to.have.property('meta');
-					expect(body[0]).to.not.have.property('assets');
+					expect(body[0]).to.have.property('assets');
 
 					expect(req.body).to.have.length.above(10);
 
@@ -360,8 +252,8 @@ describe('/v2/google/', function() {
 	});
 });
 
-describe('/v2/bootstrap/', function() {
-	var address = 'http://localhost:8090/v2/bootstrap';
+describe('/v1/bootstrap/', function() {
+	var address = 'http://localhost:8090/v1/bootstrap';
 
 	this.timeout(timeout);
 
@@ -383,9 +275,8 @@ describe('/v2/bootstrap/', function() {
 					expect(body[0]).to.have.property('github');
 					expect(body[0]).to.have.property('author');
 					expect(body[0]).to.have.property('versions');
-					expect(body[0]).to.have.property('repositories');
 					expect(body[0]).to.have.property('meta');
-					expect(body[0]).to.not.have.property('assets');
+					expect(body[0]).to.have.property('assets');
 
 					expect(req.body).to.have.length.above(5);
 
@@ -396,8 +287,8 @@ describe('/v2/bootstrap/', function() {
 	});
 });
 
-describe('/v2/jquery/', function() {
-	var address = 'http://localhost:8090/v2/jquery';
+describe('/v1/jquery/', function() {
+	var address = 'http://localhost:8090/v1/jquery';
 
 	this.timeout(timeout);
 
@@ -419,9 +310,8 @@ describe('/v2/jquery/', function() {
 					expect(body[0]).to.have.property('github');
 					expect(body[0]).to.have.property('author');
 					expect(body[0]).to.have.property('versions');
-					expect(body[0]).to.have.property('repositories');
 					expect(body[0]).to.have.property('meta');
-					expect(body[0]).to.not.have.property('assets');
+					expect(body[0]).to.have.property('assets');
 
 					expect(req.body).to.have.length.above(5);
 
