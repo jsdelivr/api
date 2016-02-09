@@ -1,172 +1,153 @@
-#!/usr/bin/env node
-'use strict';
+import Promise from 'bluebird';
+import express from 'express';
+import morgan from 'morgan';
 
-var express = require('express')
-  , morgan = require('morgan')
-  , async = require('async')
-  , _ = require('lodash')
+import db from './db';
+import config from './config';
+import log from './lib/log';
 
-  , dbs = require('./db')
-  , config = require('./config')
-  , logger = require('./lib/logger');
+let taskUpdating = {};
 
-var db = config.db
-  , taskUpdating = {};
+export default function () {
+	handleExit();
 
-module.exports = function main(cb) {
-
-  async.series([
-    init,
-    serve,
-    runTasks
-  ], function (err) {
-
-    if (err) {
-      logger.err(`Error starting application!`);
-      logger.err(err);
-      process.exit();
-    }
-    else if (cb)
-      cb();
-  });
-};
-
-var intervalSet = false;
-function runTasks(cb) {
-  logger.info('Running tasks');
-
-  // first kick off the tasks
-  async.eachSeries(Object.keys(config.tasks), function (name, done) {
-    taskUpdating[name] = false;
-    runTask(name, done);
-  }, function (err) {
-
-    if (err) {
-      logger.err('Error initializing tasks');
-      logger.err(err);
-    }
-
-    //then set the interval
-    if (!intervalSet) {
-      intervalSet = true;
-      var interval = 6 * (10 * 1e4);
-
-      // we want to space out the start of each sync cycle by 10 minutes each
-      setInterval(function () {
-        runTasks(function () {
-          logger.info('libraries synced!');
-          return true;
-        });
-      }, interval);
-    }
-
-    if (cb) cb();
-  });
+	return serve().then(() => {
+		return runTasks();
+	}).catch((error) => {
+		if (error) {
+			log.err(`Error starting application!`);
+			log.err(error);
+			process.exit();
+		}
+	});
 }
 
-function runTask(name, cb) {
+let intervalSet = false;
 
-  if(!taskUpdating[name]) {
-    taskUpdating[name] = true;
-    logger.info(`running task... ${name}`);
+function runTasks () {
+	return new Promise((resolve) => {
+		let tasks = Object.keys(config.tasks);
 
-    try {
-      require('./tasks/' + name + '.js')(dbs, function (err) {
+		log.info(`Running tasks: ${tasks.join(',')}`);
 
-        if (err) {
-          logger.err(`Error in task ${name}`);
-          logger.err(err);
-        }
-        else
-          logger.info(`Task ${name} complete`);
+		return Promise.mapSeries(tasks, (name) => {
+			taskUpdating[name] = false;
+			return runTask(name);
+		}).catch((error) => {
+			log.err(`Error initializing tasks`);
+			log.err(error);
+		}).then(() => {
+			if (!intervalSet) {
+				intervalSet = true;
+				let interval = 6 * (10 * 1e4);
 
-        // don't wait for the cache to be cleared
-        taskUpdating[name] = false;
-        cb();
+				// we want to space out the start of each sync cycle by 10 minutes each
+				setInterval(() => {
+					runTasks().then(() => {
+						log.info(`Libraries synced!`);
+					});
+				}, interval);
+			}
 
-        logger.info('Purging cache');
-
-        var purgeCache = require('./lib/purge')(config.maxcdn);
-        purgeCache(function (err) {
-          if (err) {
-            return logger.err(err);
-          }
-
-          logger.info('Cache purged');
-        });
-      });
-    } catch (e) {
-      logger.err(e);
-      cb();
-    }
-  }
-  else {
-    logger.info(`Task ${name} is already running`);
-    cb();
-  }
+			resolve();
+		});
+	});
 }
 
-function serve(cb) {
-  cb = cb || _.noop;
+function runTask (name) {
+	return new Promise((resolve) => {
+		if (!taskUpdating[name]) {
+			taskUpdating[name] = true;
 
-  var app = express()
-    , port = config.port;
+			log.info(`Running task ${name}...`);
 
-  // set global sql client
-  var KNEX = global.KNEX = require("./db/knex");
+			try {
+				require(`./tasks/${name}`)(db).then(() => {
+					log.info(`Task ${name} complete`);
 
-  app.use(morgan('dev'));
-  app.set('json spaces', 2);
+					taskUpdating[name] = false;
+					resolve();
 
-  // setup CORS
-  app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    next();
-  });
+					log.info(`Purging cache`);
 
-  // v1 routes
-  app.use('/v1', require('./routes.v1/libraries'));
-
-  // v2 routes
-  app.use('/v2/analytics', require('./routes.v2/analytics'));
-  app.use('/v2', require('./routes.v2/libraries'));
-
-  // catch all
-  app.all('*', function (req, res) {
-    res.status(404).jsonp({status: 404, message: 'Requested url ' + req.url + ' not found.'});
-  });
-
-  app.listen(port, function () {
-    logger.info(`Node (version: ${process.version}) ${process.argv[1]} started on ${port} ...`);
-    cb();
-  });
-
-  return app;
+					require('./lib/purge')(config.maxcdn)().then(() => {
+						log.info(`Cache purged`);
+					}).catch((error) => {
+						log.err(`Error purging cache`);
+						log.err(error);
+					});
+				}).catch((error) => {
+					log.err(`Error running task ${name}`);
+					log.err(error);
+					resolve();
+				});
+			} catch (error) {
+				log.err(`Couldn't run task ${name}`);
+				log.err(error);
+				resolve();
+			}
+		} else {
+			log.info(`Task ${name} is already running`);
+			resolve();
+		}
+	});
 }
 
-function init(cb) {
+function serve () {
+	return new Promise((resolve) => {
+		let app = express();
+		let port = config.port;
 
-  process.on('exit', terminator);
+		// set global sql client
+		global.KNEX = require('./db/knex');
 
-  ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT', 'SIGBUS',
-    'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGPIPE', 'SIGTERM'
-  ].forEach(function(element) {
-      process.on(element, function() { terminator(element); });
-    });
+		app.use(morgan('dev'));
+		app.set('json spaces', 2);
 
-  cb();
+		// setup CORS
+		app.use(function (req, res, next) {
+			res.header('Access-Control-Allow-Origin', '*');
+			next();
+		});
+
+		// v1 routes
+		app.use('/v1', require('./routes/v1'));
+
+		// v2 routes
+		app.use('/v2', require('./routes/v2'));
+
+		// catch all
+		app.all('*', function (req, res) {
+			res.status(404).jsonp({ status: 404, message: `Requested url ${req.url} not found.` });
+		});
+
+		app.listen(port, function () {
+			log.info(`Node (version: ${process.version}) ${process.argv[ 1 ]} started on ${port} ...`);
+			resolve(app);
+		});
+	});
 }
 
-function terminator(sig) {
+function handleExit () {
+	process.on('exit', terminator);
 
-  // close loki db
-  dbs._db.close();
+	[ 'SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT', 'SIGBUS',
+		'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGPIPE', 'SIGTERM'
+	].forEach((element) => {
+		process.on(element, () => {
+			terminator(element);
+		});
+	});
+}
 
-  if (typeof sig === 'string') {
-    logger.info(`${sig}: Received ${new Date()} - terminating Node server ...`);
+function terminator (sig) {
+	// close loki db
+	db.db.close();
 
-    process.exit(1);
-  }
+	if (typeof sig === 'string') {
+		log.info(`${sig}: Received ${new Date()} - terminating Node server`);
+		process.exit(1);
+	}
 
-  logger.info(`${new Date()}: Node server stopped.`);
+	log.info(`${new Date()}: Node server stopped`);
 }
