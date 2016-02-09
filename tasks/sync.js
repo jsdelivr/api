@@ -1,195 +1,97 @@
-'use strict';
+import url from 'url';
+import path from 'path';
 
-var async = require('async')
-  , path = require('path')
-  , url = require('url')
-  , _ = require('lodash')
-  , request = require('request')
+import _ from 'lodash';
+import Promise from 'bluebird';
+import got from 'got';
 
-  , config = require('../config');
+import config from '../config';
+import log from '../lib/log';
 
-var db = config.db;
-
-module.exports = function (dbs, cb) {
-
-  async.eachSeries(config.cdns, function (cdn, next) {
-    _syncCDN(dbs, cdn, function (err) {
-      // note the error but don't exit out of the loop,
-      // it's okay to serve stale content if something goes wrong during the sync
-      if (err) {
-        console.log("Error syncing CDN %s", cdn, err);
-      }
-      next();
-    });
-  }, cb);
-};
-
-/**
- * sync all libraries for a given cdn from the remote api-sync instance via _syncLibrary
- *
- * @param dbs lokijs db instance
- * @param cdn name
- * @param cb
- * @private
- */
-function _syncCDN(dbs, cdn, cb) {
-
-  //attempt to get etags collection for this cdn
-  var etagsCollection = dbs[config.etagsCollection]
-    , cdnCache = etagsCollection.findOne({"cdn": cdn})
-    , etags = cdnCache ? _.indexBy(cdnCache.etags || [], "path") : {};
-
-  // get the remote cache file
-  var _url = url.resolve(config.syncUrl, cdn + '.json');
-  console.log('Starting to sync %s from source %s', cdn, _url);
-
-  request.get(_url, {
-    json: true
-  }, function (err, res, remoteEtags) {
-
-    if (err || !res) {
-      return cb(err || new Error("Request to sync " + cdn + " from " + _url + " failed"));
-    }
-    else if (res.statusCode !== 200) {
-      return cb(new Error("Request to sync " + cdn + " from " + _url + " failed"));
-    }
-
-    console.log('Files for sync of %s retrieved from source %s', cdn, _url);
-
-    async.eachLimit(remoteEtags, 10, function (remoteEtag, done) {
-      if (!etags[remoteEtag.path] || etags[remoteEtag.path].etag !== remoteEtag.etag) {
-        // sync the library!
-        _syncLibrary(dbs, cdn, remoteEtag.path, function (err) {
-
-          // don't error out here,
-          // all an error means is the api will serve stale content for a library
-          // that may be mucked up on the api-sync side
-          if (err) {
-            console.error("Error syncing library!", err);
-          }
-          // update the running etag cache
-          else {
-            etags[remoteEtag.path] = remoteEtag;
-          }
-
-          done();
-        });
-      }
-      else {
-        // we're up to date, nothing to do here
-        done();
-      }
-    }, function (err) {
-      // update the etag collection if nothing drastic has happened
-      if (!err) {
-        _upsertCDNEtags(etagsCollection, cdn, etags);
-        console.log("Successfully synced libraries for " + cdn);
-      }
-      cb(err);
-    });
-  });
+export default function (db) {
+	return Promise.mapSeries(config.cdns, (cdn) => {
+		// note the error but don't exit out of the loop,
+		// it's okay to serve stale content if something goes wrong during the sync
+		return syncCdn(db, cdn).catch((error) => {
+			log.warning(`Error syncing CDN ${cdn}`);
+			log.warning(error);
+		});
+	});
 }
 
-/**
- * sync a single library json file from the api-sync instance
- *
- * @param dbs
- * @param cdnName
- * @param libraryName
- * @param cb
- * @private
- */
-function _syncLibrary(dbs, cdnName, libraryName, cb) {
+function syncCdn (db, cdn) {
+	// attempt to get etags collection for this cdn
+	let etagsCollection = db[config.etagsCollection];
+	let cdnCache = etagsCollection.findOne({ cdn });
+	let etags = cdnCache ? _.indexBy(cdnCache.etags || [], 'path') : {};
 
-  // get the remote library file
-  var _url = url.resolve(config.syncUrl, path.join(cdnName, libraryName, 'library.json'));
+	// get the remote cache file
+	let cFileUrl = url.resolve(config.syncUrl, `${cdn}.json`);
+	log.info(`Starting to sync ${cdn} from source ${cFileUrl}`);
 
-  request.get(_url, {
-    json: true
-  }, function (err, res, library) {
+	return got(cFileUrl).then((response) => {
+		log.info(`Files for sync of ${cdn} retrieved from source ${cFileUrl}`);
 
-    if (err || !res || !library) {
-      return cb(err || new Error("Request to sync " + libraryName + " from " + _url + " failed"));
-    }
-    else if (res.statusCode !== 200) {
-      return cb(new Error("Request to sync " + libraryName + " from " + _url + " failed"));
-    }
-
-    var schemaKeys = Object.keys(dbs._schema);
-    var collection = dbs[cdnName];
-
-    // create the db item by selecting desired values from synced data and filling in absent data w/ defaults
-    var item = _.pick(library, schemaKeys);
-    _.defaults(item, dbs._schema);
-
-    // only insert if the item does not currently exist
-    var name = library.name || null;
-    if (name) {
-      var _item = collection.findOne({"name": name});
-      if (!_item) {
-        collection.insert(item);
-      }
-      else {
-        _.extend(_item, item);
-        collection.update(_item);
-      }
-    }
-
-    // quick hack to fix #94
-    if(cdnName === "bootstrap-cdn" && library.name === "twitter-bootstrap") {
-      var item = _.pick(library, schemaKeys);
-      _.defaults(item, dbs._schema);
-      item.name = "bootstrap";
-      var _item = collection.findOne({"name": item.name});
-      if (!_item) {
-        collection.insert(item);
-      }
-      else {
-        _.extend(_item, item);
-        collection.update(_item);
-      }
-    }
-
-    // clean up
-    item = null;
-
-    // and return
-    cb();
-  });
+		return Promise.map(JSON.parse(response.body), (remoteEtag) => {
+			if (!etags[remoteEtag.path] || etags[remoteEtag.path].etag !== remoteEtag.etag) {
+				return syncLibrary(db, cdn, remoteEtag.path).then(() => {
+					etags[remoteEtag.path] = remoteEtag;
+				}).catch((error) => {
+					log.warning('Error syncing library!');
+					log.warning(error);
+				});
+			}
+		}, { concurrency: 10 });
+	}).then(() => {
+		log.info(`Successfully synced libraries for ${cdn}`);
+		updateCdnEtags(etagsCollection, cdn, etags);
+	});
 }
 
-/**
- * refreshes the current CDN etags cache w/ the successfully synced libraries remote etag data
- *
- * @param etagsCollection
- * @param cdn
- * @param etags
- * @private
- */
-function _upsertCDNEtags(etagsCollection, cdn, etags) {
+function syncLibrary (db, cdn, library) {
+	// get the remote library file
+	let libraryUrl = url.resolve(config.syncUrl, path.join(cdn, library, 'library.json'));
 
-  var _cdnCache = etagsCollection.findOne({"cdn": cdn})
-    , cdnEtags = {cdn: cdn};
+	return got(libraryUrl).then((response) => {
+		if (!response.body) {
+			throw new Error(`Request to sync ${library} from ${cdn} failed - empty response`);
+		}
 
-  cdnEtags.etags = _.map(etags, function (etag) {
-    return etag;
-  });
+		let version = cdn.substr(0, 2);
+		let schema = db[`${version}Schema`];
+		let schemaKeys = Object.keys(schema);
+		let collection = db[cdn];
 
-  if (!_cdnCache) {
-    etagsCollection.insert(cdnEtags);
-  }
-  else {
-    cdnEtags.meta = _cdnCache.meta;
-    cdnEtags.$loki = _cdnCache.$loki;
-    etagsCollection.update(cdnEtags);
-  }
+		// create the db item by selecting desired values from synced data and filling in absent data w/ defaults
+		let item = _.pick(JSON.parse(response.body), schemaKeys);
+		_.defaults(item, schema);
+
+		// only insert if the item does not currently exist
+		let name = item.name || null;
+
+		if (name) {
+			let _item = collection.findOne({ name });
+
+			if (!_item) {
+				collection.insert(item);
+			} else {
+				collection.update(_.extend(_item, item));
+			}
+		}
+	});
 }
 
-function _catchBootstrap() {
-  if(cdn === "bootstrap-cdn") {
-    var bootstrapTwitterEtag = _.find(remoteEtags, {path: "bootstrap-twitter"});
-    if(bootstrapTwitterEtag) {
-      bootstrapTwitterEtag.path
-    }
-  }
+function updateCdnEtags (etagsCollection, cdn, etags) {
+	let cdnCache = etagsCollection.findOne({ cdn });
+	let cdnEtags = { cdn };
+
+	cdnEtags.etags = _.map(etags, etag => etag);
+
+	if (!cdnCache) {
+		etagsCollection.insert(cdnEtags);
+	} else {
+		cdnEtags.meta = cdnCache.meta;
+		cdnEtags.$loki = cdnCache.$loki;
+		etagsCollection.update(cdnEtags);
+	}
 }

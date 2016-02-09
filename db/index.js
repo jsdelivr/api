@@ -1,46 +1,32 @@
-/**
- * Created by austin on 5/5/15.
- */
+import _ from 'lodash';
+import Loki from 'lokijs';
+import config from '../config';
 
-"use strict";
-
-var _ = require("lodash")
-  , loki = require('lokijs')
-
-  , config = require('../config');
-
-function _v1Schema() {
-  return {
-    name: "",
-    mainfile: "",
-    lastversion: "",
-    description: "",
-    homepage: "",
-    github: "",
-    author: "",
-    versions: [],
-    assets: {}
-  }
-}
-
-function _etagsSchema() {
-  return {
-    cdn: ""
-  }
-}
-
-var dbs = {
-  _db: new loki(config.db),
-  _schema: _v1Schema(),
-  _etagsSchema: _etagsSchema()
+let db = {
+	db: new Loki(config.db),
+	v1Schema: {
+		name: '',
+		mainfile: '',
+		lastversion: '',
+		description: '',
+		homepage: '',
+		github: '',
+		author: '',
+		versions: [],
+		assets: {},
+		meta: {},
+	},
+	etagsSchema: {
+		cdn: '',
+	},
 };
 
 // add a collection for each cdn
-_.each(config.cdnCollections, function (collection) {
-  dbs[collection.name] = dbs._db.addCollection(collection.name, {indices: ['name']});
+_.each(config.cdnCollections, (collection) => {
+	db[collection.name] = db.db.addCollection(collection.name, { indices: [ 'name' ] });
 });
 
 // add an etags collection
-dbs[config.etagsCollection] = dbs._db.addCollection(config.etagsCollection, {indices: ['cdn']});
+db[config.etagsCollection] = db.db.addCollection(config.etagsCollection, { indices: [ 'cdn' ] });
 
-module.exports = dbs;
+export default db;
