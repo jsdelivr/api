@@ -59,6 +59,7 @@ Queries to `/v2/<cdn>/library` additionally include `assets` field.
 "assets": [
   {
     "<version>": {
+      "baseUrl": "<baseUrlOnTheCdn>",
       "files": <arrayOfFiles>,
       "mainfile": <libraryMainFileForThisVersion | "">
     }
