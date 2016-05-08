@@ -27,7 +27,7 @@ module.exports = {
 	],
 	etagsCollection: 'etagsCollection',
 	//syncUrl: 'http://localhost:8000/data/',
-	syncUrl: 'http://144.76.57.166:8000/data/',
+	syncUrl: 'http://46.4.74.152:8000/data/',
 	tasks: {
 		sync: {},
 	},
