@@ -135,7 +135,7 @@ api.jsdelivr.com/v2/foo
 
 - `/<cdn>/libraries`
   - Returns an array of library objects for all libraries hosted by `<cdn>`; you can provide query arguments to narrow the scope of your search, or to return only specific object fields in the response.
-  
+
   **Example**
   ```
   api.jsdelivr.com/v2/jsdelivr/libraries
@@ -148,30 +148,30 @@ api.jsdelivr.com/v2/foo
   api.jsdelivr.com/v2/jsdelivr/libraries?name=jquery
   api.jsdelivr.com/v2/jsdelivr/libraries/jquery (alias)
   // => fuzzy string matching on the library name; returns jquery and jquerypp
-  
+
   api.jsdelivr.com/v2/jsdelivr/libraries?name=jquery*
   // => while fuzzy matching only matches names that are very similar,
   // "*" means any number of any characters, so this will return all projects with names starting with jquery
-  
+
   api.jsdelivr.com/v2/jsdelivr/libraries?name=jquery,bootstrap
   // => you can also use a comma to match several projects at once;
   // note that fuzzy matching is disabled in this case, but you can still use "*"
-  
+
   api.jsdelivr.com/v2/jsdelivr/libraries?mainfile=jquery.min.js
   // => all libraries with mainfile named jquery.min.js
-  
+
   api.jsdelivr.com/v2/jsdelivr/libraries?lastversion=2.0.3
   // => all libraries with lastversion equal to 2.0.3
 
   api.jsdelivr.com/v2/jsdelivr/libraries?author=jQuery%20Foundation
   // => all libraries by the specified author
-  
+
   api.jsdelivr.com/v2/jsdelivr/libraries?homepage=http://jquery.com/
   // => all libraries with homepage equal to http://jquery.com/
 
   api.jsdelivr.com/v2/jsdelivr/libraries?github=https://github.com/jquery/jquery
   // => all libraries with github equal to https://github.com/jquery/jquery
-  
+
   api.jsdelivr.com/v2/jsdelivr/libraries?fields=name,mainfile
   // => only include the specified fields in the response
   ```
@@ -179,7 +179,7 @@ api.jsdelivr.com/v2/foo
 - `/<cdn>/library/<library>`
   - Returns a library object for a specific library contained in the CDN; supports the same query parameters as `/<cdn>/libraries/`
 - `/<cdn>/library/<library>/<version>`
-  - Returns a list of files for the specified `<version>` of `<library>`
+  - Returns assets for the specified `<version>` of `<library>`
 
 [usage-url]: #usage
 [resources-url]: #response-resource-objects
