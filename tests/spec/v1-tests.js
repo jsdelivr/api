@@ -75,7 +75,7 @@ describe('/v1/jsdelivr/', function() {
 					expect(req).to.have.status(200);
 
 					expect(req.body).to.be.instanceof(Array);
-					expect(req.body).to.be.have.length(3);
+					expect(req.body).to.have.length(3);
 					expect(req.body).to.include('jquery.js');
 					expect(req.body).to.include('jquery.min.js');
 					expect(req.body).to.include('jquery.min.map');
