@@ -178,6 +178,18 @@ describe('/v1/jsdelivr/', function() {
 				})
 				.catch(done);
 		});
+
+		it('Results limit', function(done) {
+			chai.request(address)
+				.get('/libraries')
+				.query({ name: 'jq*', limit: 3 })
+				.then(function(req) {
+					expect(req.body).to.have.length.of.at.most(3);
+
+					done();
+				})
+				.catch(done);
+		});
 	});
 });
 
