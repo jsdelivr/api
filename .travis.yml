@@ -1,10 +1,3 @@
 language: node_js
 node_js:
 - '5'
-deploy:
-  provider: nodejitsu
-  user: jimaek
-  api_key:
-    secure: GTRFyAsn3HSyPbrvVcDDDtUhB8IssE1Y72lzwGDPwhaUrBuEdiM+oCouKE8AdXb5Lu+7xuwPVxyaJfdRXbKCs9kpJH2iS60SGHV3YcCIXGVAauI+2piKNBnib5kKc/xyYIuEUr6fdGHvhdiq48CJZWF6Ie6bxyihLrWs/wDfTxM=
-  on:
-    repo: jsdelivr/api
