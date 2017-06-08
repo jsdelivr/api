@@ -1,0 +1,1 @@
+{"name":"danmaku","assets":[{"files":["danmaku.js","danmaku.min.js"],"version":"1.2.0","mainfile":"danmaku.min.js"}],"versions":["1.2.0"],"zip":"danmaku.zip","author":"Zhenye Wei","github":"https://github.com/weizhenye/Danmaku","homepage":"https://danmaku.js.org","description":"A high-performance JavaScript danmaku engine.","mainfile":"danmaku.min.js","lastversion":"1.2.0"}

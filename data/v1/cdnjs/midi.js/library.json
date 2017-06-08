@@ -1,0 +1,1 @@
+{"name":"midi.js","assets":[{"files":["MIDIPlayer.css","midi.js","midi.min.js"],"version":"0.3.0","mainfile":"midi.min.js"}],"versions":["0.3.0"],"zip":"midi.js.zip","mainfile":"midi.min.js","author":"Michael Deal","lastversion":"0.3.0","homepage":null,"description":"Library to assist in creating HTML5 MIDI apps.","github":"git://github.com/mudcube/MIDI.js.git"}

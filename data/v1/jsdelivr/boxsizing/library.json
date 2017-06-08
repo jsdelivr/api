@@ -1,0 +1,1 @@
+{"name":"boxsizing","assets":[{"files":["boxsizing.htc"],"version":"0.1","mainfile":"boxsizing.htc"}],"versions":["0.1"],"zip":"boxsizing.zip","author":"Christian Schaefer","homepage":"https://github.com/Schepp/box-sizing-polyfill","description":"A CSS box-sizing: border-box polyfill for IE 6/7","mainfile":"boxsizing.htc","lastversion":"0.1"}

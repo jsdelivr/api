@@ -1,0 +1,1 @@
+{"name":"savejs","assets":[{"files":["save.js","save.min.js"],"version":"1.0.1","mainfile":"save.min.js"}],"versions":["1.0.1"],"zip":"savejs.zip","author":"lltr","github":"https://github.com/savejs/savejs","homepage":"https://savejs.com/","description":"save.js allows ease of saving anything in an input field to a text file.","mainfile":"save.min.js","lastversion":"1.0.1"}

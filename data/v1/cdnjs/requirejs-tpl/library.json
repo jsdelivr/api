@@ -1,0 +1,1 @@
+{"name":"requirejs-tpl","assets":[{"files":["tpl.js","tpl.min.js"],"version":"0.0.2","mainfile":"tpl.min.js"}],"versions":["0.0.2"],"zip":"requirejs-tpl.zip","mainfile":"tpl.min.js","author":null,"lastversion":"0.0.2","homepage":null,"description":"RequireJS UnderscoreJS template plugin","github":"https://github.com/jfparadis/requirejs-tpl"}

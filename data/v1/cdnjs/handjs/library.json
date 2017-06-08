@@ -1,0 +1,1 @@
+{"name":"handjs","assets":[{"files":["hand.js","hand.min.js"],"version":"1.3.11","mainfile":"hand.min.js"}],"versions":["1.3.11"],"zip":"handjs.zip","mainfile":"hand.min.js","author":"David Catuhe","lastversion":"1.3.11","homepage":null,"description":"Hand.js is a polyfill for pointer events.","github":"git://github.com/deltakosh/handjs.git"}

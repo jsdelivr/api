@@ -1,0 +1,1 @@
+{"name":"director","assets":[{"files":["director.js","director.min.js"],"version":"1.1.9","mainfile":"director.min.js"}],"versions":["1.1.9"],"zip":"director.zip","author":"flatiron","homepage":"https://github.com/flatiron/director","description":"A tiny and isomorphic URL router for JavaScript ","mainfile":"director.min.js","lastversion":"1.1.9"}

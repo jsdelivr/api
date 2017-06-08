@@ -1,0 +1,1 @@
+{"name":"aurora.js-aac","assets":[{"files":["aac.js","aac.min.js"],"version":"0.1.0","mainfile":"aac.min.js"}],"versions":["0.1.0"],"zip":"aurora.js-aac.zip","mainfile":"aac.min.js","author":"Devon Govett <devongovett@gmail.com>","lastversion":"0.1.0","homepage":null,"description":"An AAC decoder for Aurora.js","github":"git://github.com/audiocogs/aac.js"}
