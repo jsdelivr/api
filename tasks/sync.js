@@ -1,12 +1,14 @@
-import url from 'url';
+import fs from 'fs';
 import path from 'path';
 
 import _ from 'lodash';
 import Promise from 'bluebird';
-import got from 'got';
 
 import config from '../config';
 import log from '../lib/log';
+
+const readFile = Promise.promisify(fs.readFile);
+const syncDir = path.join(__dirname, '../data/');
 
 export default function (db) {
 	return Promise.mapSeries(config.cdns, (cdn) => {
@@ -26,13 +28,13 @@ function syncCdn (db, cdn) {
 	let etags = cdnCache ? _.indexBy(cdnCache.etags || [], 'path') : {};
 
 	// get the remote cache file
-	let cFileUrl = url.resolve(config.syncUrl, `${cdn}.json`);
+	let cFileUrl = path.join(syncDir, `${cdn}.json`);
 	log.info(`Starting to sync ${cdn} from source ${cFileUrl}`);
 
-	return got(cFileUrl).then((response) => {
+	return readFile(cFileUrl, 'utf8').then((data) => {
 		log.info(`Files for sync of ${cdn} retrieved from source ${cFileUrl}`);
 
-		return Promise.map(JSON.parse(response.body), (remoteEtag) => {
+		return Promise.map(JSON.parse(data), (remoteEtag) => {
 			if (!etags[remoteEtag.path] || etags[remoteEtag.path].etag !== remoteEtag.etag) {
 				return syncLibrary(db, cdn, remoteEtag.path).then(() => {
 					etags[remoteEtag.path] = remoteEtag;
@@ -50,10 +52,10 @@ function syncCdn (db, cdn) {
 
 function syncLibrary (db, cdn, library) {
 	// get the remote library file
-	let libraryUrl = url.resolve(config.syncUrl, path.join(cdn, library, 'library.json'));
+	let libraryUrl = path.join(syncDir, path.join(cdn, library, 'library.json'));
 
-	return got(libraryUrl).then((response) => {
-		if (!response.body) {
+	return readFile(libraryUrl, 'utf8').then((data) => {
+		if (!data) {
 			throw new Error(`Request to sync ${library} from ${cdn} failed - empty response`);
 		}
 
@@ -63,7 +65,7 @@ function syncLibrary (db, cdn, library) {
 		let collection = db[cdn];
 
 		// create the db item by selecting desired values from synced data and filling in absent data w/ defaults
-		let item = _.pick(JSON.parse(response.body), schemaKeys);
+		let item = _.pick(JSON.parse(data), schemaKeys);
 		_.defaults(item, schema);
 
 		// only insert if the item does not currently exist
