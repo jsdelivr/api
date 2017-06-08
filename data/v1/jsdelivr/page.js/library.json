@@ -1,0 +1,1 @@
+{"name":"page.js","assets":[{"files":["page.min.js"],"version":"1.6.3","mainfile":"page.min.js"}],"versions":["1.6.3"],"zip":"page.js.zip","author":"TJ Holowaychuk","github":"https://github.com/visionmedia/page.js","homepage":"http://visionmedia.github.io/page.js/","description":"Tiny ~1200 byte Express-inspired client-side router","mainfile":"page.min.js","lastversion":"1.6.3"}

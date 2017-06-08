@@ -1,0 +1,1 @@
+{"name":"elm-runtime","assets":[{"files":["elm-runtime.min.js"],"version":"0.8.0.3","mainfile":"elm-runtime.min.js"}],"versions":["0.8.0.3"],"zip":"elm-runtime.zip","mainfile":"elm-runtime.min.js","author":null,"lastversion":"0.8.0.3","homepage":"http://elm-lang.org/","description":"The runtime for the Elm language.","github":"https://github.com/elm-lang/elm-compiler.git"}

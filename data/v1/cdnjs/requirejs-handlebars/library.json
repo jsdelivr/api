@@ -1,0 +1,1 @@
+{"name":"requirejs-handlebars","assets":[{"files":["hbars.js","hbars.min.js"],"version":"0.0.2","mainfile":"hbars.min.js"}],"versions":["0.0.2"],"zip":"requirejs-handlebars.zip","mainfile":"hbars.min.js","author":null,"lastversion":"0.0.2","homepage":null,"description":"RequireJS Handlebars template plugin","github":"https://github.com/jfparadis/requirejs-handlebars"}

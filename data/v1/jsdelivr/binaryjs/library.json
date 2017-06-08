@@ -1,0 +1,1 @@
+{"name":"binaryjs","assets":[{"files":["binary.min.js"],"version":"0.2.1","mainfile":"binary.min.js"}],"versions":["0.2.1"],"zip":"binaryjs.zip","author":"binaryjs","github":"https://github.com/binaryjs/binaryjs","homepage":"http://binaryjs.com/","mainfile":"binary.min.js","description":"Node binary websocket streaming made easy","lastversion":"0.2.1"}

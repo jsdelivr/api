@@ -1,0 +1,1 @@
+{"name":"nonsense","assets":[{"files":["nonsense.js","nonsense.min.js"],"version":"0.1","mainfile":"nonsense.min.js"}],"versions":["0.1"],"zip":"nonsense.zip","author":"Josh Faul","github":"https://github.com/jocafa/Nonsense","homepage":"https://github.com/jocafa/Nonsense","description":"Generate repeatable random data in JS","mainfile":"nonsense.min.js","lastversion":"0.1"}

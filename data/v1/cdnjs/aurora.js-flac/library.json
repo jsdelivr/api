@@ -1,0 +1,1 @@
+{"name":"aurora.js-flac","assets":[{"files":["flac.js","flac.min.js"],"version":"0.2.1","mainfile":"flac.min.js"}],"versions":["0.2.1"],"zip":"aurora.js-flac.zip","mainfile":"flac.min.js","author":"Devon Govett <devongovett@gmail.com>","lastversion":"0.2.1","homepage":null,"description":"A FLAC decoder for Aurora.js","github":"git://github.com/audiocogs/flac.js"}

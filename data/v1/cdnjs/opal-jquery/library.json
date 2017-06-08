@@ -1,0 +1,1 @@
+{"name":"opal-jquery","assets":[{"files":["opal-jquery.js","opal-jquery.min.js"],"version":"0.0.8","mainfile":"opal-jquery.min.js"}],"versions":["0.0.8"],"zip":"opal-jquery.zip","mainfile":"opal-jquery.min.js","author":null,"lastversion":"0.0.8","homepage":"http://opalrb.org","description":"jQuery for Opal","github":"https://github.com/opal/opal-jquery"}

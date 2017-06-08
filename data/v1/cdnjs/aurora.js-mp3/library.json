@@ -1,0 +1,1 @@
+{"name":"aurora.js-mp3","assets":[{"files":["mp3.js","mp3.min.js"],"version":"0.1.0","mainfile":"mp3.min.js"}],"versions":["0.1.0"],"zip":"aurora.js-mp3.zip","mainfile":"mp3.min.js","author":"Devon Govett <devongovett@gmail.com>","lastversion":"0.1.0","homepage":null,"description":"An MP3 decoder for Aurora.js","github":"git://github.com/audiocogs/mp3.js"}

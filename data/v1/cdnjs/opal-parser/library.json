@@ -1,0 +1,1 @@
+{"name":"opal-parser","assets":[{"files":["opal-parser.js","opal-parser.min.js"],"version":"0.3.43","mainfile":"opal-parser.min.js"}],"versions":["0.3.43"],"zip":"opal-parser.zip","mainfile":"opal-parser.min.js","author":null,"lastversion":"0.3.43","homepage":null,"description":"Ruby runtime and core library for javascript.","github":"https://github.com/opal/opal"}
