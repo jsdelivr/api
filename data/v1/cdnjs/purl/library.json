@@ -1,1 +1,0 @@
-{"name":"purl","assets":[{"files":["purl.js","purl.min.js"],"version":"2.3.1","mainfile":"purl.min.js"}],"versions":["2.3.1"],"zip":"purl.zip","mainfile":"purl.min.js","author":"allmarkedup","lastversion":"2.3.1","homepage":null,"description":"A JS utility for for parsing URLs and extracting information out of them.","github":"https://github.com/allmarkedup/purl"}

@@ -1,1 +1,0 @@
-{"name":"aurora.js-alac","assets":[{"files":["alac.js","alac.min.js"],"version":"0.1.0","mainfile":"alac.min.js"}],"versions":["0.1.0"],"zip":"aurora.js-alac.zip","mainfile":"alac.min.js","author":"Devon Govett <devongovett@gmail.com>","lastversion":"0.1.0","homepage":null,"description":"An Apple Lossless decoder for Aurora.js","github":"git://github.com/audiocogs/alac.js"}

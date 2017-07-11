@@ -1,1 +1,0 @@
-{"name":"opal","assets":[{"files":["opal.js","opal.min.js"],"version":"0.3.43","mainfile":"opal.min.js"}],"versions":["0.3.43"],"zip":"opal.zip","mainfile":"opal.min.js","author":null,"lastversion":"0.3.43","homepage":"http://opalrb.org","description":"Ruby runtime and core library for javascript.","github":"https://github.com/opal/opal"}

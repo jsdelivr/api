@@ -1,1 +1,0 @@
-{"name":"require-domReady","assets":[{"files":["domReady.js","domReady.min.js"],"version":"2.0.1","mainfile":"domReady.min.js"}],"versions":["2.0.1"],"zip":"require-domReady.zip","mainfile":"domReady.min.js","author":null,"lastversion":"2.0.1","homepage":null,"description":"An AMD loader plugin for detecting DOM ready","github":"https://github.com/requirejs/domReady"}

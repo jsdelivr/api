@@ -1,1 +1,0 @@
-{"name":"requirejs-async","assets":[{"files":["async.js"],"version":"0.1.1","mainfile":"async.js"}],"versions":["0.1.1"],"zip":"requirejs-async.zip","mainfile":"async.js","author":null,"lastversion":"0.1.1","homepage":null,"description":"RequireJS plugin for async dependency load like JSONP and Google Maps","github":"https://github.com/millermedeiros/requirejs-plugins"}

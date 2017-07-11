@@ -1,1 +1,0 @@
-{"name":"CoolQueue.io","assets":[{"files":["coolqueue.io.js","coolqueue.io.min.js"],"version":"1.0.0","mainfile":"coolqueue.io.min.js"}],"versions":["1.0.0"],"zip":"CoolQueue.io.zip","mainfile":"coolqueue.io.min.js","author":null,"lastversion":"1.0.0","homepage":null,"description":"Offline failsafe for socket.io","github":"https://github.com/peterwilli/CoolQueue.io"}
