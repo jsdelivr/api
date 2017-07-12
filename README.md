@@ -1,6 +1,6 @@
 # DEPRECATED
 
-The v1 API has been deprecated. All endpoints will continue to work, but will use a dataset created on June 8, 2017 and won't receive any future updates.
+The v1 API has been deprecated. All endpoints will continue to work, but will use a dataset created on June 8, 2017 and won't receive any future updates. See https://github.com/jsdelivr/data.jsdelivr.com for a new API.
 
 # Public CDNs API
 
