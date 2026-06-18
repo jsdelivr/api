@@ -25,7 +25,7 @@ function syncCdn (db, cdn) {
 	// attempt to get etags collection for this cdn
 	let etagsCollection = db[config.etagsCollection];
 	let cdnCache = etagsCollection.findOne({ cdn });
-	let etags = cdnCache ? _.indexBy(cdnCache.etags || [], 'path') : {};
+	let etags = cdnCache ? _.keyBy(cdnCache.etags || [], 'path') : {};
 
 	// get the remote cache file
 	let cFileUrl = path.join(syncDir, `${cdn}.json`);

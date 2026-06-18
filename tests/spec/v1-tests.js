@@ -2,7 +2,41 @@ var chai = require('chai');
 var expect = chai.expect;
 var timeout = 30000;
 
-chai.use(require('chai-http'));
+function request(address) {
+	return {
+		get: function(path) {
+			var url = new URL(address + path);
+
+			return {
+				query: function(params) {
+					Object.keys(params).forEach(function(key) {
+						url.searchParams.set(key, params[key]);
+					});
+
+					return this;
+				},
+				then: function(resolve, reject) {
+					return fetch(url)
+						.then(function(response) {
+							return response.text().then(function(text) {
+								return {
+									status: response.status,
+									type: response.headers.get('content-type') || '',
+									body: text ? JSON.parse(text) : null,
+								};
+							});
+						})
+						.then(resolve, reject);
+				},
+			};
+		},
+	};
+}
+
+function expectOkJson(response) {
+	expect(response.status).to.equal(200);
+	expect(response.type).to.contain('application/json');
+}
 
 describe('/v1/jsdelivr/', function() {
 	var address = 'http://localhost:8090/v1/jsdelivr';
@@ -11,11 +45,10 @@ describe('/v1/jsdelivr/', function() {
 
 	describe('/libraries', function() {
 		it('Resolving /libraries', function(done) {
-			chai.request(address)
+			request(address)
 				.get('/libraries')
 				.then(function(req) {
-					expect(req).to.have.status(200);
-					expect(req).to.be.json;
+					expectOkJson(req);
 
 					var body = req.body;
 					expect(body).to.be.instanceof(Array);
@@ -38,11 +71,11 @@ describe('/v1/jsdelivr/', function() {
 		});
 
 		it('Minimatch search', function(done) {
-			chai.request(address)
+			request(address)
 				.get('/libraries')
 				.query({ name: 'jquery*' })
 				.then(function(req) {
-					expect(req).to.have.status(200);
+					expect(req.status).to.equal(200);
 
 					req.body.forEach(function(lib) {
 						expect(lib.name).to.have.string('jquery');
@@ -56,10 +89,10 @@ describe('/v1/jsdelivr/', function() {
 		});
 
 		it('/libraries/<library> alias', function (done) {
-			chai.request(address)
+			request(address)
 				.get('/libraries/jquery')
 				.then(function (req) {
-					expect(req).to.have.status(200);
+					expect(req.status).to.equal(200);
 
 					expect(req.body[0].name).to.equal('jquery');
 
@@ -69,10 +102,10 @@ describe('/v1/jsdelivr/', function() {
 		});
 
 		it('/libraries/<library>/<version>', function (done) {
-			chai.request(address)
+			request(address)
 				.get('/libraries/jquery/2.2.0')
 				.then(function (req) {
-					expect(req).to.have.status(200);
+					expect(req.status).to.equal(200);
 
 					expect(req.body).to.be.instanceof(Array);
 					expect(req.body).to.be.have.length(3);
@@ -86,11 +119,11 @@ describe('/v1/jsdelivr/', function() {
 		});
 
 		it('Search by mainfile', function (done) {
-			chai.request(address)
+			request(address)
 				.get('/libraries')
 				.query({ mainfile: 'jquery.min.js' })
 				.then(function (req) {
-					expect(req).to.have.status(200);
+					expect(req.status).to.equal(200);
 
 					req.body.forEach(function(lib) {
 						expect(lib.mainfile).to.equal('jquery.min.js');
@@ -104,11 +137,11 @@ describe('/v1/jsdelivr/', function() {
 		});
 
 		it('Search by last version', function (done) {
-			chai.request(address)
+			request(address)
 				.get('/libraries')
 				.query({ lastversion: '2.0.3' })
 				.then(function (req) {
-					expect(req).to.have.status(200);
+					expect(req.status).to.equal(200);
 					expect(req.body).to.have.length.above(0);
 
 					done();
@@ -117,11 +150,11 @@ describe('/v1/jsdelivr/', function() {
 		});
 
 		it('Search by author', function (done) {
-			chai.request(address)
+			request(address)
 				.get('/libraries')
 				.query({ author: 'jQuery Foundation' })
 				.then(function (req) {
-					expect(req).to.have.status(200);
+					expect(req.status).to.equal(200);
 
 					req.body.forEach(function(lib) {
 						expect(lib.author).to.equal('jQuery Foundation');
@@ -135,11 +168,11 @@ describe('/v1/jsdelivr/', function() {
 		});
 
 		it('Select specific fields', function (done) {
-			chai.request(address)
+			request(address)
 				.get('/libraries')
 				.query({ fields: 'name,mainfile' })
 				.then(function (req) {
-					expect(req).to.have.status(200);
+					expect(req.status).to.equal(200);
 
 					var body = req.body;
 					expect(body[0]).to.have.property('name');
@@ -160,11 +193,11 @@ describe('/v1/jsdelivr/', function() {
 		});
 
 		it('Multiple criteria', function (done) {
-			chai.request(address)
+			request(address)
 				.get('/libraries')
 				.query({ name: 'jquery*', author: 'jQuery', mainfile: 'jquery-migrate.min.js' })
 				.then(function (req) {
-					expect(req).to.have.status(200);
+					expect(req.status).to.equal(200);
 
 					req.body.forEach(function(lib) {
 						expect(lib.name).to.have.string('jquery');
@@ -180,7 +213,7 @@ describe('/v1/jsdelivr/', function() {
 		});
 
 		it('Results limit', function(done) {
-			chai.request(address)
+			request(address)
 				.get('/libraries')
 				.query({ name: 'jq*', limit: 3 })
 				.then(function(req) {
@@ -200,12 +233,11 @@ describe('/v1/cdnjs/', function() {
 
 	describe('/libraries', function() {
 		it('Resolving /libraries', function(done) {
-			chai.request(address)
+			request(address)
 				.get('/libraries')
 				.query({ name: 'jquery*' }) // returning all libraries takes too long
 				.then(function(req) {
-					expect(req).to.have.status(200);
-					expect(req).to.be.json;
+					expectOkJson(req);
 
 					var body = req.body;
 					expect(body).to.be.instanceof(Array);
@@ -236,11 +268,10 @@ describe('/v1/google/', function() {
 
 	describe('/libraries', function() {
 		it('Resolving /libraries', function(done) {
-			chai.request(address)
+			request(address)
 				.get('/libraries')
 				.then(function(req) {
-					expect(req).to.have.status(200);
-					expect(req).to.be.json;
+					expectOkJson(req);
 
 					var body = req.body;
 					expect(body).to.be.instanceof(Array);
@@ -271,11 +302,10 @@ describe('/v1/bootstrap/', function() {
 
 	describe('/libraries', function() {
 		it('Resolving /libraries', function(done) {
-			chai.request(address)
+			request(address)
 				.get('/libraries')
 				.then(function(req) {
-					expect(req).to.have.status(200);
-					expect(req).to.be.json;
+					expectOkJson(req);
 
 					var body = req.body;
 					expect(body).to.be.instanceof(Array);
@@ -306,11 +336,10 @@ describe('/v1/jquery/', function() {
 
 	describe('/libraries', function() {
 		it('Resolving /libraries', function(done) {
-			chai.request(address)
+			request(address)
 				.get('/libraries')
 				.then(function(req) {
-					expect(req).to.have.status(200);
-					expect(req).to.be.json;
+					expectOkJson(req);
 
 					var body = req.body;
 					expect(body).to.be.instanceof(Array);

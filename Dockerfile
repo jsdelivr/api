@@ -1,5 +1,19 @@
-FROM node:4
-RUN git clone https://github.com/jsdelivr/api
-RUN cd api && npm install
+FROM node:22-slim
+
+ENV NODE_ENV=production
+
+WORKDIR /app
+
+RUN chown node:node /app
+
+COPY --chown=node:node package.json package-lock.json ./
+
+USER node
+
+RUN npm ci --omit=dev && npm cache clean --force
+
+COPY --chown=node:node . .
+
 EXPOSE 8089
-CMD ["node", "/api/serve.js"]
+
+CMD ["node", "serve.js"]
