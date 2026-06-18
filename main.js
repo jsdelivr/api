@@ -67,15 +67,6 @@ function runTask (name) {
 
 					taskUpdating[name] = false;
 					resolve();
-
-					log.info(`Purging cache`);
-
-					require('./lib/purge')(config.maxcdn)().then(() => {
-						log.info(`Cache purged`);
-					}).catch((error) => {
-						log.err(`Error purging cache`);
-						log.err(error);
-					});
 				}).catch((error) => {
 					log.err(`Error running task ${name}`);
 					log.err(error);

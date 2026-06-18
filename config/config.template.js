@@ -21,12 +21,6 @@ module.exports = {
 	tasks: {
 		sync: {},
 	},
-	maxcdn: {
-		alias: 'replace this',
-		key: 'replace this',
-		secret: 'replace this',
-		zoneId: 0, // replace with some zone id
-	},
 	github: '', // replace with github token
 	logentriesToken: 'aaaaaaaa-1111-1111-1111-aaaaaaaaaaaa', // replace with logentries token
 	sql: {

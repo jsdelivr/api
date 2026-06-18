@@ -18,7 +18,6 @@
     "forever": "^4.0.3",
     "lodash": "^4.18.1",
     "lokijs": "^1.5.12",
-    "maxcdn": "^0.2.3",
     "minimatch": "^10.2.5",
     "morgan": "^1.11.0",
     "parse-env": "~0.5",
