@@ -4,7 +4,10 @@ ENV NODE_ENV=production
 
 WORKDIR /app
 
-RUN chown node:node /app
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends curl \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& chown node:node /app
 
 COPY --chown=node:node package.json package-lock.json ./
 
